@@ -1,14 +1,7 @@
 # noinspection PyUnresolvedReferences
-cimport numpy as np
 import numpy as np
-
-# As we do not use any numpy C API functions we do no import_array here,
-# because it can lead to OS X error: https://github.com/jopohl/urh/issues/273
-# np.import_array()
-
-cimport cython
-from cython.parallel import prange
-from libc.math cimport log10
+cimport numpy as np
+from libcpp cimport bool
 
 cpdef tuple minmax(float[:] arr):
     cdef long long i, ns = len(arr)
@@ -30,7 +23,7 @@ cpdef tuple minmax(float[:] arr):
 
 
 cpdef np.ndarray[np.int8_t, ndim=3] build_xor_matrix(list bitvectors):
-    cdef unsigned int maximum = 0
+    cdef int maximum = 0
     cdef np.int8_t[:] bitvector_i, bitvector_j
     cdef int i, j, l
     for i in range(0, len(bitvectors)):
@@ -69,15 +62,3 @@ cpdef str longest_common_substring(str s1, str s2):
             else:
                 m[x, y] = 0
     return s1[x_longest - longest: x_longest]
-
-cpdef np.ndarray[np.float32_t, ndim=2] arr2decibel(np.ndarray[np.complex64_t, ndim=2] arr):
-    cdef long long x = arr.shape[0]
-    cdef long long y  = arr.shape[1]
-    cdef long long i, j = 0
-    cdef np.ndarray[np.float32_t, ndim=2] result = np.empty((x,y), dtype=np.float32)
-    cdef np.float32_t factor = 10.0
-
-    for i in prange(x, nogil=True, schedule='static'):
-        for j in range(y):
-            result[i, j] = factor * log10(arr[i, j].real * arr[i, j].real + arr[i, j].imag * arr[i, j].imag)
-    return result

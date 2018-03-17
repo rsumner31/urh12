@@ -1,9 +1,10 @@
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QDragEnterEvent, QDropEvent
+from PyQt5.QtGui import QDragEnterEvent
+from PyQt5.QtGui import QDropEvent
 
+from urh.SignalSceneManager import SignalSceneManager
 from urh.signalprocessing.ProtocolAnalyzer import ProtocolAnalyzer
 from urh.signalprocessing.Signal import Signal
-from urh.ui.painting.SignalSceneManager import SignalSceneManager
 from urh.ui.views.ZoomableGraphicView import ZoomableGraphicView
 
 
@@ -11,7 +12,9 @@ class ZoomAndDropableGraphicView(ZoomableGraphicView):
     signal_loaded = pyqtSignal(ProtocolAnalyzer)
 
     def __init__(self, parent=None):
-        self.signal_tree_root = None  # type: ProtocolTreeItem
+        self.signal_tree_root = None
+        """type signal_tree_root: ProtocolTreeItem"""
+
         self.scene_manager = None
 
         self.signal = None  # type: Signal
@@ -59,11 +62,3 @@ class ZoomAndDropableGraphicView(ZoomableGraphicView):
         self.auto_fit_view()
 
         self.signal_loaded.emit(self.proto_analyzer)
-
-    def eliminate(self):
-        # Do _not_ call eliminate() for self.signal and self.proto_analyzer
-        # as these are references to the original data!
-        self.signal = None
-        self.proto_analyzer = None
-        self.signal_tree_root = None
-        super().eliminate()

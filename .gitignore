@@ -16,7 +16,7 @@ src/urh/controller/__pycache__/
 src/urh/cythonext/__pycache__/
 src/urh/dev/__pycache__/
 src/urh/dev/gr/__pycache__/
-*.pyc
+src/urh/dev/gr/scripts/InputHandlerThread.pyc
 src/urh/dev/native/__pycache__/
 src/urh/dev/native/lib/__pycache__/
 src/urh/models/__pycache__/
@@ -35,6 +35,3 @@ src/urh.egg-info/
 .cache/
 tests/data/URHProject.xml
 src/urh/cythonext/*.html
-/tests/show_gui
-
-misc/*

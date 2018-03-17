@@ -71,12 +71,7 @@ class Preamble(Component):
         bits = message.decoded_bits
 
         # Skip sequences of equal bits
-        try:
-            first_difference = next((i for i in range(search_start, search_end-1) if bits[i] != bits[i+1]), None)
-        except IndexError:
-            # see: https://github.com/jopohl/urh/issues/290
-            first_difference = None
-
+        first_difference = next((i for i in range(search_start, search_end-1) if bits[i] != bits[i+1]), None)
         if first_difference is None:
             return None
 

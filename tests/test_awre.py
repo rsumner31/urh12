@@ -1,6 +1,5 @@
 import unittest
 
-from tests.utils_testing import get_path_for_data_file
 from urh.awre.CommonRange import CommonRange
 from urh.awre.FormatFinder import FormatFinder
 from urh.awre.components.Address import Address
@@ -11,11 +10,11 @@ from urh.awre.components.Preamble import Preamble
 from urh.awre.components.SequenceNumber import SequenceNumber
 from urh.awre.components.Type import Type
 from urh.signalprocessing.FieldType import FieldType
-from urh.signalprocessing.Message import Message
 from urh.signalprocessing.Participant import Participant
 from urh.signalprocessing.ProtocoLabel import ProtocolLabel
 from urh.signalprocessing.ProtocolAnalyzer import ProtocolAnalyzer
-
+from urh.signalprocessing.Message import Message
+from tests.utils_testing import get_path_for_data_file
 
 class TestAWRE(unittest.TestCase):
     def setUp(self):
@@ -31,7 +30,7 @@ class TestAWRE(unittest.TestCase):
         self.protocol = ProtocolAnalyzer(None)
         with open(get_path_for_data_file("awre_consistent_addresses.txt")) as f:
             for line in f:
-                self.protocol.messages.append(Message.from_plain_bits_str(line.replace("\n", "")))
+                self.protocol.messages.append(Message.from_plain_bits_str(line.replace("\n", ""), {}))
                 self.protocol.messages[-1].message_type = self.protocol.default_message_type
 
         # Assign participants
@@ -46,7 +45,7 @@ class TestAWRE(unittest.TestCase):
         self.zero_crc_protocol = ProtocolAnalyzer(None)
         with open(get_path_for_data_file("awre_zeroed_crc.txt")) as f:
             for line in f:
-                self.zero_crc_protocol.messages.append(Message.from_plain_bits_str(line.replace("\n", "")))
+                self.zero_crc_protocol.messages.append(Message.from_plain_bits_str(line.replace("\n", ""), {}))
                 self.zero_crc_protocol.messages[-1].message_type = self.protocol.default_message_type
 
         for i, message in enumerate(self.zero_crc_protocol.messages):
@@ -89,17 +88,17 @@ class TestAWRE(unittest.TestCase):
         dst_address_start, dst_address_end = 88, 111
         src_address_start, src_address_end = 112, 135
 
-        preamble_label = ProtocolLabel(name=self.preamble_field_type.caption, field_type=self.preamble_field_type,
+        preamble_label = ProtocolLabel(name=self.preamble_field_type.caption, type=self.preamble_field_type,
                                        start=preamble_start, end=preamble_end, color_index=0)
-        sync_label = ProtocolLabel(name=self.sync_field_type.caption, field_type=self.sync_field_type,
+        sync_label = ProtocolLabel(name=self.sync_field_type.caption, type=self.sync_field_type,
                                    start=sync_start, end=sync_end, color_index=1)
-        length_label = ProtocolLabel(name=self.length_field_type.caption, field_type=self.length_field_type,
+        length_label = ProtocolLabel(name=self.length_field_type.caption, type=self.length_field_type,
                                      start=length_start, end=length_end, color_index=2)
-        ack_address_label = ProtocolLabel(name=self.dst_address_field_type.caption, field_type=self.dst_address_field_type,
+        ack_address_label = ProtocolLabel(name=self.dst_address_field_type.caption, type=self.dst_address_field_type,
                                           start=ack_address_start, end=ack_address_end, color_index=3)
-        dst_address_label = ProtocolLabel(name=self.dst_address_field_type.caption, field_type=self.dst_address_field_type,
+        dst_address_label = ProtocolLabel(name=self.dst_address_field_type.caption, type=self.dst_address_field_type,
                                           start=dst_address_start, end=dst_address_end, color_index=4)
-        src_address_label = ProtocolLabel(name=self.src_address_field_type.caption, field_type=self.src_address_field_type,
+        src_address_label = ProtocolLabel(name=self.src_address_field_type.caption, type=self.src_address_field_type,
                                           start=src_address_start, end=src_address_end, color_index=5)
 
         ff = FormatFinder(protocol=self.protocol, participants=self.participants, field_types=self.field_types)
@@ -133,7 +132,7 @@ class TestAWRE(unittest.TestCase):
         enocean_protocol = ProtocolAnalyzer(None)
         with open(get_path_for_data_file("enocean_bits.txt")) as f:
             for line in f:
-                enocean_protocol.messages.append(Message.from_plain_bits_str(line.replace("\n", "")))
+                enocean_protocol.messages.append(Message.from_plain_bits_str(line.replace("\n", ""), {}))
                 enocean_protocol.messages[-1].message_type = enocean_protocol.default_message_type
 
 
@@ -142,9 +141,9 @@ class TestAWRE(unittest.TestCase):
         sof_start = 11
         sof_end = 14
 
-        preamble_label = ProtocolLabel(name=self.preamble_field_type.caption, field_type=self.preamble_field_type,
+        preamble_label = ProtocolLabel(name=self.preamble_field_type.caption, type=self.preamble_field_type,
                                        start=preamble_start, end=preamble_end, color_index=0)
-        sync_label = ProtocolLabel(name=self.sync_field_type.caption, field_type=self.sync_field_type,
+        sync_label = ProtocolLabel(name=self.sync_field_type.caption, type=self.sync_field_type,
                                    start=sof_start, end=sof_end, color_index=1)
 
 
@@ -169,15 +168,15 @@ class TestAWRE(unittest.TestCase):
         expected_address2 = '78e289'
 
 
-        #print(Address.find_candidates(candidates_participant_1))
-        #print(Address.find_candidates(candidates_participant_2))
+        print(Address.find_candidates(candidates_participant_1))
+        print(Address.find_candidates(candidates_participant_2))
         combined = candidates_participant_1+candidates_participant_2
         combined.sort(key=len)
         score = Address.find_candidates(combined)
-        #print(score)
-        #print("=================")
-        #print(sorted(score, key=lambda k: score[k], reverse=True))
-        #print()
+        print(score)
+        print("=================")
+        print(sorted(score, key=lambda k: score[k], reverse=True))
+        print()
 
         highscored = sorted(score, key=lambda k: score[k], reverse=True)[:2]
         self.assertIn(expected_address1, highscored)

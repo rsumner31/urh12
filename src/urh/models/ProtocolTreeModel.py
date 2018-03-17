@@ -2,14 +2,15 @@ from PyQt5.QtCore import QAbstractItemModel, pyqtSignal, QModelIndex, Qt, QMimeD
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtWidgets import QMessageBox, QWidget
 
+from urh import constants
 from urh.models.ProtocolTreeItem import ProtocolTreeItem
 from urh.signalprocessing.ProtocolAnalyzer import ProtocolAnalyzer
 from urh.signalprocessing.ProtocolGroup import ProtocolGroup
-from urh.util.Logger import logger
 
 
 class ProtocolTreeModel(QAbstractItemModel):
     item_dropped = pyqtSignal()
+    labels_on_group_dropped = pyqtSignal(list, int)
     group_deleted = pyqtSignal(int, int)
     proto_to_group_added = pyqtSignal(int)
     group_added = pyqtSignal(QModelIndex)
@@ -17,6 +18,8 @@ class ProtocolTreeModel(QAbstractItemModel):
     def __init__(self, controller, parent=None):
         self.rootItem = ProtocolTreeItem(None, None)
         self.rootItem.addGroup()
+
+        self.reference_protocol = -1
         self.controller = controller
 
         super().__init__(parent)
@@ -79,11 +82,11 @@ class ProtocolTreeModel(QAbstractItemModel):
 
         return self.rootItem
 
-    def rowCount(self, parent: QModelIndex = None, *args, **kwargs):
+    def rowCount(self, parent: QModelIndex=None, *args, **kwargs):
         parent_item = self.getItem(parent)
         return parent_item.childCount()
 
-    def columnCount(self, parent: QModelIndex = None, *args, **kwargs):
+    def columnCount(self, parent: QModelIndex=None, *args, **kwargs):
         return 1
 
     def index(self, row: int, column: int, parent=None, *args, **kwargs):
@@ -97,7 +100,7 @@ class ProtocolTreeModel(QAbstractItemModel):
         else:
             return QModelIndex()
 
-    def parent(self, index: QModelIndex = None):
+    def parent(self, index: QModelIndex=None):
         if not index.isValid():
             return QModelIndex()
 
@@ -129,6 +132,8 @@ class ProtocolTreeModel(QAbstractItemModel):
                 font = QFont()
                 font.setBold(True)
                 return font
+        elif role == Qt.TextColorRole and item.protocol == self.reference_protocol:
+            return constants.SELECTED_ROW_COLOR
         elif role == Qt.ToolTipRole:
             return item.data()
 
@@ -169,11 +174,12 @@ class ProtocolTreeModel(QAbstractItemModel):
         return Qt.ItemIsEditable | Qt.ItemIsEnabled | Qt.ItemIsSelectable | \
                Qt.ItemIsUserCheckable | Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled
 
+
     def supportedDragActions(self):
         return Qt.MoveAction | Qt.CopyAction
 
     def mimeTypes(self):
-        return ['text/plain', 'text/uri-list']
+        return['text/plain', 'text/uri-list']
 
     def mimeData(self, indexes):
         data = ''
@@ -192,6 +198,24 @@ class ProtocolTreeModel(QAbstractItemModel):
             return True
 
         data_str = str(mimedata.text())
+        if data_str.startswith("PLabels"):
+            # Labels Dropped
+            data_str = data_str.replace("'", "")
+            label_ids = list(map(int, data_str.replace("PLabels:", "").split("/")))
+            drop_node = self.getItem(parentIndex)
+            if drop_node == self.rootItem:
+                return False
+            elif drop_node.is_group:
+                parent = drop_node
+            else:
+                parent = drop_node.parent()
+
+            dropped_group_id = self.rootItem.index_of(parent)
+
+            self.labels_on_group_dropped.emit(label_ids, dropped_group_id)
+
+            return True
+
         indexes = list(reversed(data_str.split("/")[:-1]))
         drag_nodes = []
 
@@ -206,18 +230,14 @@ class ProtocolTreeModel(QAbstractItemModel):
             else:
                 parent = self.rootItem.child(parent)
             node = parent.child(row)
-            try:
-                if node.is_group:
-                    contains_groups = True
-                else:
-                    contains_files = True
-            except AttributeError:
-                logger.error("Could not perform drop for index {}".format(index))
-                continue
+            if node.is_group:
+                contains_groups = True
+            else:
+                contains_files = True
 
             if contains_files and contains_groups:
                 QMessageBox.information(QWidget(), self.tr("Drag not supported"),
-                                        self.tr("You can only drag/drop groups or protocols, no mixtures of both."))
+                           self.tr("You can only drag/drop groups or protocols, no mixtures of both."))
                 return False
 
             drag_nodes.append(node)
@@ -305,8 +325,7 @@ class ProtocolTreeModel(QAbstractItemModel):
     def delete_group(self, group_item: ProtocolTreeItem):
         if self.rootItem.childCount() == 1:
             QMessageBox.critical(self.controller, self.tr("Group not deletable"),
-                                 self.tr(
-                                     "You can't delete the last group. Think about the children, they would be homeless!"))
+                           self.tr("You can't delete the last group. Think about the children, they would be homeless!"))
             return
 
         group_id = self.rootItem.index_of(group_item)

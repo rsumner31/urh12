@@ -8,6 +8,7 @@ import select
 
 
 class RTLSDRTCP(Device):
+    BYTES_PER_SAMPLE = 2  # RTLSDR device produces 8 bit unsigned IQ data
     MAXDATASIZE = 65536
     ENDIAN = "big"
     RTL_TCP_CONSTS = ["NULL", "centerFreq", "sampleRate", "tunerGainMode", "tunerGain", "freqCorrection", "tunerIFGain",
@@ -16,21 +17,18 @@ class RTLSDRTCP(Device):
 
     @staticmethod
     def receive_sync(data_connection, ctrl_connection, device_number: int, center_freq: int, sample_rate: int,
-                     bandwidth: int, gain: int, freq_correction: int, direct_sampling_mode: int, device_ip: str,
-                     port: int):
+                     gain: int, freq_correction: int, direct_sampling_mode: int, device_ip: str, port: int):
         # connect and initialize rtl_tcp
-        sdr = RTLSDRTCP(center_freq, gain, sample_rate, bandwidth, device_number)
+        sdr = RTLSDRTCP(center_freq, gain, sample_rate, device_number)
         sdr.open(ctrl_connection, device_ip, port)
         if sdr.socket_is_open:
             sdr.device_number = device_number
             sdr.set_parameter("centerFreq", int(center_freq), ctrl_connection)
             sdr.set_parameter("sampleRate", int(sample_rate), ctrl_connection)
-            sdr.set_parameter("bandwidth", int(bandwidth), ctrl_connection)
+            sdr.set_parameter("bandwidth", int(sample_rate), ctrl_connection)   # set bandwidth equal to sample_rate
+            sdr.set_parameter("tunerGain", 10 * int(gain), ctrl_connection)     # gain is multiplied by 10 because of rtlsdr-API
             sdr.set_parameter("freqCorrection", int(freq_correction), ctrl_connection)
             sdr.set_parameter("directSampling", int(direct_sampling_mode), ctrl_connection)
-            # Gain has to be set last, otherwise it does not get considered by RTL-SDR
-            sdr.set_parameter("tunerGain", 10 * int(gain),
-                              ctrl_connection)  # gain is multiplied by 10 because of rtlsdr-API
             exit_requested = False
 
             while not exit_requested:
@@ -51,44 +49,43 @@ class RTLSDRTCP(Device):
         data_connection.close()
         ctrl_connection.close()
 
-    def process_command(self, command, ctrl_connection, is_tx=False):
+    def process_command(self, command, ctrl_connection):
         logger.debug("RTLSDRTCP: {}".format(command))
-        if command == self.Command.STOP.name:
-            return self.Command.STOP
+        if command == "stop":
+            return "stop"
 
-        tag, value = command
-        if tag == self.Command.SET_FREQUENCY.name:
+        tag, value = command.split(":")
+        if tag == "center_freq":
             logger.info("RTLSDRTCP: Set center freq to {0}".format(int(value)))
             return self.set_parameter("centerFreq", int(value), ctrl_connection)
 
-        elif tag == self.Command.SET_RF_GAIN.name:
+        elif tag == "rf_gain":
             logger.info("RTLSDRTCP: Set tuner gain to {0}".format(int(value)))
             return self.set_parameter("tunerGain", 10 * int(value), ctrl_connection)  # calculate *10 for API
 
-        elif tag == self.Command.SET_IF_GAIN.name:
+        elif tag == "if_gain":
             logger.info("RTLSDRTCP: Set if gain to {0}".format(int(value)))
             return self.set_parameter("tunerIFGain", 10 * int(value), ctrl_connection)  # calculate *10 for API
 
-        elif tag == self.Command.SET_SAMPLE_RATE.name:
+        elif tag == "sample_rate":
             logger.info("RTLSDRTCP: Set sample_rate to {0}".format(int(value)))
             return self.set_parameter("sampleRate", int(value), ctrl_connection)
 
-        elif tag == self.Command.SET_BANDWIDTH.name:
+        elif tag == "tuner_bandwidth":
             logger.info("RTLSDRTCP: Set bandwidth to {0}".format(int(value)))
             return self.set_parameter("bandwidth", int(value), ctrl_connection)
 
-        elif tag == self.Command.SET_FREQUENCY_CORRECTION.name:
+        elif tag == "freq_correction":
             logger.info("RTLSDRTCP: Set ppm correction to {0}".format(int(value)))
             return self.set_parameter("freqCorrection", int(value), ctrl_connection)
 
-        elif tag == self.Command.SET_DIRECT_SAMPLING_MODE.name:
+        elif tag == "direct_sampling_mode":
             logger.info("RTLSDRTCP: Set direct sampling mode to {0}".format(int(value)))
             return self.set_parameter("directSampling", int(value), ctrl_connection)
 
-    def __init__(self, freq, gain, srate, bandwidth, device_number, resume_on_full_receive_buffer=False):
-        super().__init__(center_freq=freq, sample_rate=srate, bandwidth=bandwidth,
-                         gain=gain, if_gain=1, baseband_gain=1,
-                         resume_on_full_receive_buffer=resume_on_full_receive_buffer)
+    def __init__(self, freq, gain, srate, device_number, is_ringbuffer=False):
+        super().__init__(center_freq=freq, sample_rate=srate, bandwidth=0,
+                         gain=gain, if_gain=1, baseband_gain=1, is_ringbuffer=is_ringbuffer)
 
         # default class parameters
         self.receive_process_function = self.receive_sync
@@ -99,7 +96,7 @@ class RTLSDRTCP(Device):
     @property
     def receive_process_arguments(self):
         return self.child_data_conn, self.child_ctrl_conn, self.device_number, self.frequency, self.sample_rate, \
-               self.bandwidth, self.gain, self.freq_correction, self.direct_sampling_mode, self.device_ip, self.port
+               self.gain, self.freq_correction, self.direct_sampling_mode, self.device_ip, self.port
 
     def open(self, ctrl_connection, hostname="127.0.0.1", port=1234):
         if not self.socket_is_open:
@@ -187,14 +184,14 @@ class RTLSDRTCP(Device):
             return b''
 
     @staticmethod
-    def unpack_complex(buffer):
+    def unpack_complex(buffer, nvalues: int):
         """
         The raw, captured IQ data is 8 bit unsigned data.
 
         :return:
         """
+        result = np.empty(nvalues, dtype=np.complex64)
         unpacked = np.frombuffer(buffer, dtype=[('r', np.uint8), ('i', np.uint8)])
-        result = np.empty(len(unpacked), dtype=np.complex64)
         result.real = (unpacked['r'] / 127.5) - 1.0
         result.imag = (unpacked['i'] / 127.5) - 1.0
         return result

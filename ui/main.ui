@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>798</width>
-    <height>469</height>
+    <width>1017</width>
+    <height>884</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Universal Radio Hacker</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="urh.qrc">
+   <iconset resource="../urh.qrc">
     <normaloff>:/icons/data/icons/appicon.png</normaloff>:/icons/data/icons/appicon.png</iconset>
   </property>
   <property name="tabShape">
@@ -24,91 +24,38 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_4" stretch="100,1">
+   <layout class="QVBoxLayout" name="verticalLayout_4">
     <item>
      <widget class="QSplitter" name="splitter">
-      <property name="styleSheet">
-       <string notr="true">QSplitter::handle:horizontal {
-margin: 4px 0px;
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, 
-stop:0 rgba(255, 255, 255, 0), 
-stop:0.5 rgba(100, 100, 100, 100), 
-stop:1 rgba(255, 255, 255, 0));
-image: url(:/icons/data/icons/splitter_handle_vertical.svg);
-}</string>
-      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <property name="handleWidth">
-       <number>6</number>
+      <property name="childrenCollapsible">
+       <bool>true</bool>
       </property>
       <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <property name="spacing">
-         <number>7</number>
-        </property>
-        <property name="leftMargin">
-         <number>11</number>
-        </property>
-        <property name="topMargin">
-         <number>11</number>
-        </property>
-        <property name="rightMargin">
-         <number>11</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,3,0">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QLineEdit" name="lnEdtTreeFilter">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="acceptDrops">
-             <bool>false</bool>
-            </property>
-            <property name="inputMethodHints">
-             <set>Qt::ImhDialableCharactersOnly</set>
-            </property>
-            <property name="placeholderText">
-             <string>Filter</string>
-            </property>
-            <property name="clearButtonEnabled">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QToolButton" name="btnFileTreeGoUp">
-            <property name="text">
-             <string>...</string>
-            </property>
-            <property name="icon">
-             <iconset theme="go-up">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QLineEdit" name="lnEdtTreeFilter">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="acceptDrops">
+           <bool>false</bool>
+          </property>
+          <property name="inputMethodHints">
+           <set>Qt::ImhDialableCharactersOnly</set>
+          </property>
+          <property name="placeholderText">
+           <string>Filter</string>
+          </property>
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="DirectoryTreeView" name="fileTree">
@@ -123,9 +70,6 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
             <width>16777215</width>
             <height>16777215</height>
            </size>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="autoScroll">
            <bool>true</bool>
@@ -158,9 +102,6 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="styleSheet">
-           <string notr="true">QTabWidget::pane { border: 0; }</string>
-          </property>
           <property name="currentIndex">
            <number>0</number>
           </property>
@@ -169,24 +110,8 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
             <string>Participants</string>
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
             <item>
-             <widget class="QListView" name="listViewParticipants">
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-             </widget>
+             <widget class="QListView" name="listViewParticipants"/>
             </item>
            </layout>
           </widget>
@@ -195,18 +120,6 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
             <string>Description</string>
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
             <item>
              <widget class="QTextEdit" name="textEditProjectDescription"/>
             </item>
@@ -223,12 +136,6 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="currentIndex">
         <number>0</number>
        </property>
@@ -236,81 +143,27 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
         <attribute name="title">
          <string>Interpretation</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-        </layout>
+        <layout class="QVBoxLayout" name="verticalLayout_2"/>
        </widget>
        <widget class="QWidget" name="tab_protocol">
         <attribute name="title">
          <string>Analysis</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-        </layout>
+        <layout class="QVBoxLayout" name="verticalLayout"/>
        </widget>
        <widget class="QWidget" name="tab_generator">
         <attribute name="title">
          <string>Generator</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-        </layout>
+        <layout class="QVBoxLayout" name="verticalLayout_5"/>
        </widget>
       </widget>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="labelNonProjectMode">
-      <property name="styleSheet">
-       <string notr="true">background: rgba(255,255,0,64)</string>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Warning: You are running URH in non project mode. All your settings will be lost after closing the program. If you want to keep your settings create a project via File -&amp;gt; &lt;a href=&quot;open_new_project_dialog&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;New Project&lt;/span&gt;&lt;/a&gt;. &lt;a href=&quot;dont_show_non_project_again&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Don't show this hint&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
+     <widget class="QProgressBar" name="progressBar">
+      <property name="value">
+       <number>24</number>
       </property>
      </widget>
     </item>
@@ -321,32 +174,20 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>798</width>
-     <height>23</height>
+     <width>1017</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>Fi&amp;le</string>
     </property>
-    <widget class="QMenu" name="menuImport">
-     <property name="title">
-      <string>Import</string>
-     </property>
-     <property name="icon">
-      <iconset theme="document-import">
-       <normaloff>.</normaloff>.</iconset>
-     </property>
-     <addaction name="actionSamples_from_csv"/>
-    </widget>
     <addaction name="actionNew_Project"/>
     <addaction name="actionProject_settings"/>
     <addaction name="actionSave_project"/>
     <addaction name="separator"/>
     <addaction name="actionOpen"/>
     <addaction name="actionOpen_directory"/>
-    <addaction name="menuImport"/>
-    <addaction name="separator"/>
     <addaction name="actionRecord"/>
     <addaction name="actionSniff_protocol"/>
     <addaction name="actionSpectrum_Analyzer"/>
@@ -360,10 +201,12 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
     <property name="title">
      <string>Edi&amp;t</string>
     </property>
+    <addaction name="actionMinimize_all"/>
+    <addaction name="actionMaximize_all"/>
+    <addaction name="separator"/>
     <addaction name="actionDecoding"/>
     <addaction name="actionOptions"/>
     <addaction name="separator"/>
-    <addaction name="actionShowFileTree"/>
     <addaction name="actionFullscreen_mode"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -377,6 +220,7 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
    <addaction name="menuEdit"/>
    <addaction name="menuHelp"/>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionFSK">
    <property name="checkable">
     <bool>true</bool>
@@ -514,12 +358,24 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
    </property>
   </action>
   <action name="actionClose_all">
-   <property name="icon">
-    <iconset theme="window-close">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
    <property name="text">
     <string>&amp;Close all</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionMinimize_all">
+   <property name="text">
+    <string>&amp;Minimize all</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionMaximize_all">
+   <property name="text">
+    <string>Maximize &amp;all</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
@@ -600,26 +456,18 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
   </action>
   <action name="actionConvert_Folder_to_Project">
    <property name="text">
-    <string>Conv&amp;ert Folder to Project</string>
+    <string>Convert &amp;Folder to Project</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>true</bool>
    </property>
   </action>
   <action name="actionDecoding">
-   <property name="icon">
-    <iconset resource="urh.qrc">
-     <normaloff>:/icons/data/icons/decoding.svg</normaloff>:/icons/data/icons/decoding.svg</iconset>
-   </property>
    <property name="text">
     <string>&amp;Decoding...</string>
    </property>
   </action>
   <action name="actionRecord">
-   <property name="icon">
-    <iconset theme="media-record">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
    <property name="text">
     <string>&amp;Record signal...</string>
    </property>
@@ -628,10 +476,6 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
    </property>
   </action>
   <action name="actionSpectrum_Analyzer">
-   <property name="icon">
-    <iconset resource="urh.qrc">
-     <normaloff>:/icons/data/icons/spectrum.svg</normaloff>:/icons/data/icons/spectrum.svg</iconset>
-   </property>
    <property name="text">
     <string>Spectrum &amp;Analyzer...</string>
    </property>
@@ -651,29 +495,25 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
     <bool>true</bool>
    </property>
   </action>
-  <action name="actionNew_Project">
-   <property name="icon">
-    <iconset theme="folder-new">
-     <normaloff>.</normaloff>.</iconset>
+  <action name="actionShow_file_tree">
+   <property name="checkable">
+    <bool>true</bool>
    </property>
+   <property name="text">
+    <string>Sh&amp;ow file tree</string>
+   </property>
+  </action>
+  <action name="actionNew_Project">
    <property name="text">
     <string>&amp;New Project..</string>
    </property>
   </action>
   <action name="actionSniff_protocol">
-   <property name="icon">
-    <iconset resource="urh.qrc">
-     <normaloff>:/icons/data/icons/sniffer.svg</normaloff>:/icons/data/icons/sniffer.svg</iconset>
-   </property>
    <property name="text">
     <string>Sn&amp;iff protocol...</string>
    </property>
   </action>
   <action name="actionProject_settings">
-   <property name="icon">
-    <iconset theme="configure">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
    <property name="text">
     <string>&amp;Project settings...</string>
    </property>
@@ -701,29 +541,12 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Open &amp;folder...</string>
+    <string>Open &amp;directory...</string>
    </property>
   </action>
   <action name="actionAbout_Qt">
    <property name="text">
-    <string>About &amp;Qt</string>
-   </property>
-  </action>
-  <action name="actionShowFileTree">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Show file tree</string>
-   </property>
-  </action>
-  <action name="actionSamples_from_csv">
-   <property name="icon">
-    <iconset theme="text-csv">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
-   <property name="text">
-    <string>IQ samples from csv</string>
+    <string>About Qt</string>
    </property>
   </action>
  </widget>
@@ -735,7 +558,7 @@ image: url(:/icons/data/icons/splitter_handle_vertical.svg);
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="urh.qrc"/>
+  <include location="../urh.qrc"/>
  </resources>
  <connections/>
 </ui>

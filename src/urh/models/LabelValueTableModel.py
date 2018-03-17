@@ -1,42 +1,21 @@
-import array
 from PyQt5.QtCore import QAbstractTableModel, Qt, QModelIndex
-
-from urh import constants
-from urh.signalprocessing.ChecksumLabel import ChecksumLabel
-from urh.signalprocessing.MessageType import MessageType
-from urh.signalprocessing.ProtocoLabel import ProtocolLabel
 from urh.signalprocessing.ProtocolAnalyzer import ProtocolAnalyzer
-from urh.util import util
 
 
 class LabelValueTableModel(QAbstractTableModel):
-    header_labels = ["Name", 'Display format', 'Bit order', 'Value']
+    header_labels = ["Name", 'Display format', 'Value']
 
     def __init__(self, proto_analyzer: ProtocolAnalyzer, controller, parent=None):
         super().__init__(parent)
         self.proto_analyzer = proto_analyzer
         self.controller = controller
         self.__message_index = 0
-        self.display_labels = controller.active_message_type  # type: MessageType
+        self.display_labels = controller.active_message_type
+        """:type: urh.signalprocessing.MessageType.MessageType"""
 
-    def __display_data(self, lbl: ProtocolLabel, expected_checksum: array = None):
-        try:
-            data = self.message.decoded_bits[lbl.start:lbl.end]
-        except IndexError:
-            return None
-
-        lsb = lbl.display_bit_order_index == 1
-        lsd = lbl.display_bit_order_index == 2
-
-        data = util.convert_bits_to_string(data, lbl.display_format_index, pad_zeros=True, lsb=lsb, lsd=lsd)
-        if data is None:
-            return None
-
-        if expected_checksum is not None:
-            data += " (should be {0})".format(
-                util.convert_bits_to_string(expected_checksum, lbl.display_format_index))
-
-        return data
+        self.bit_str = self.proto_analyzer.decoded_proto_bits_str
+        self.hex_str = self.proto_analyzer.decoded_hex_str
+        self.ascii_str = self.proto_analyzer.decoded_ascii_str
 
     @property
     def message_index(self):
@@ -56,6 +35,9 @@ class LabelValueTableModel(QAbstractTableModel):
 
     def update(self):
         self.display_labels = self.controller.active_message_type
+        self.bit_str = self.proto_analyzer.decoded_proto_bits_str
+        self.hex_str = self.proto_analyzer.decoded_hex_str
+        self.ascii_str = self.proto_analyzer.decoded_ascii_str
         self.beginResetModel()
         self.endResetModel()
 
@@ -77,75 +59,55 @@ class LabelValueTableModel(QAbstractTableModel):
         if not index.isValid():
             return None
 
-        i, j = index.row(), index.column()
-
-        try:
-            lbl = self.display_labels[i]
-        except IndexError:
-            return None
-
-        if not lbl or not self.message:
-            return None
-
-        if isinstance(lbl, ChecksumLabel):
-            calculated_crc = lbl.calculate_checksum_for_message(self.message, use_decoded_bits=True)
-        else:
-            calculated_crc = None
-
         if role == Qt.DisplayRole:
+            i = index.row()
+            j = index.column()
+            lbl = self.display_labels[i]
+            if not lbl:
+                return None
+
             if j == 0:
                 return lbl.name
             elif j == 1:
                 return lbl.DISPLAY_FORMATS[lbl.display_format_index]
             elif j == 2:
-                return lbl.DISPLAY_BIT_ORDERS[lbl.display_bit_order_index]
-            elif j == 3:
-                return self.__display_data(lbl, calculated_crc)
-
-        elif role == Qt.BackgroundColorRole:
-            if isinstance(lbl, ChecksumLabel):
-                start, end = self.message.get_label_range(lbl, 0, True)
-                if calculated_crc == self.message.decoded_bits[start:end]:
-                    return constants.BG_COLOR_CORRECT
-                else:
-                    return constants.BG_COLOR_WRONG
-
-            else:
-                return None
-
-        elif role == Qt.ToolTipRole:
-            if j == 1:
-                return self.tr("Choose display type for the value of the label:"
-                               "<ul>"
-                               "<li>Bit</li>"
-                               "<li>Hexadecimal (Hex)</li>"
-                               "<li>ASCII chars</li>"
-                               "<li>Decimal Number</li>"
-                               "<li>Binary Coded Decimal (BCD)</li>"
-                               "</ul>")
-            if j == 2:
-                return self.tr("Choose bit order for the displayed value:"
-                               "<ul>"
-                               "<li>Most Significant Bit (MSB) [Default]</li>"
-                               "<li>Least Significant Bit (LSB)</li>"
-                               "<li>Least Significant Digit (LSD)</li>"
-                               "</ul>")
+                if not self.message:
+                    return None
+                start, end = self.message.get_label_range(lbl, lbl.display_format_index % 3, True)
+                if lbl.display_format_index == 0:
+                    try:
+                        return self.bit_str[self.message_index][start:end]
+                    except IndexError:
+                        return None
+                elif lbl.display_format_index == 1:
+                    try:
+                        return self.hex_str[self.message_index][start:end]
+                    except IndexError:
+                        return None
+                elif lbl.display_format_index == 2:
+                    try:
+                        return self.ascii_str[self.message_index][start:end]
+                    except IndexError:
+                        return None
+                elif lbl.display_format_index == 3:
+                    try:
+                        try:
+                            decimal = int(self.bit_str[self.message_index][start:end], 2)
+                        except IndexError:
+                            return None
+                    except ValueError:
+                        decimal = ""
+                    return decimal
 
     def setData(self, index: QModelIndex, value, role=None):
         if role == Qt.EditRole:
-            row = index.row()
-            lbl = self.display_labels[row]
-            if index.column() == 1 or index.column() == 2:
-                if index.column() == 1:
-                    lbl.display_format_index = value
-                elif index.column() == 2:
-                    lbl.display_bit_order_index = value
-                self.dataChanged.emit(self.index(row, 0),
-                                      self.index(row, self.columnCount()))
+            lbl = self.display_labels[index.row()]
+            if index.column() == 1:
+                lbl.display_format_index = value
 
     def flags(self, index: QModelIndex):
         flags = super().flags(index)
-        if index.column() == 1 or index.column() == 2:
+        if index.column() == 1:
             flags |= Qt.ItemIsEditable
 
         return flags

@@ -1,9 +1,11 @@
 import unittest
 
-from tests.utils_testing import get_path_for_data_file
+from PyQt5.QtTest import QTest
+
+from urh import constants
 from urh.signalprocessing.ProtocolAnalyzer import ProtocolAnalyzer
 from urh.signalprocessing.Signal import Signal
-
+from tests.utils_testing import get_path_for_data_file
 
 class TestProtocolAnalyzer(unittest.TestCase):
     def test_get_bit_sample_pos(self):
@@ -15,7 +17,7 @@ class TestProtocolAnalyzer(unittest.TestCase):
         proto_analyzer.get_protocol_from_signal()
         self.assertEqual(proto_analyzer.num_messages, 1)
         for i, pos in enumerate(proto_analyzer.messages[0].bit_sample_pos):
-            self.assertLess(pos, signal.num_samples, msg=i)
+            self.assertLess(pos, signal.num_samples, msg = i)
 
     def test_fsk_freq_detection(self):
         s = Signal(get_path_for_data_file("steckdose_anlernen.complex"), "RWE")
@@ -32,21 +34,27 @@ class TestProtocolAnalyzer(unittest.TestCase):
                          "10110010100011111101110111000010111100111101001011101101011011010110101011100")
 
         freq = pa.estimate_frequency_for_one(1e6)
-        self.assertEqual(1, int(freq / 10000))  # Freq for 1 is 10K
+        self.assertAlmostEqual(1, freq / 10000, places = 1)  # Freq for 1 is 10K
         freq = pa.estimate_frequency_for_zero(1e6)
-        self.assertEqual(3, int(freq / 10000))  # Freq for 0 is 30K
+        self.assertAlmostEqual(3, freq / 10000, places = 1)  # Freq for 0 is 30K
 
-    def test_get_rssi_of_message(self):
-        signal = Signal(get_path_for_data_file("two_participants.complex"), "RSSI-Test")
-        signal.modulation_type = 1
-        signal.bit_len = 100
-        signal.qad_center = -0.0507
+    def test_symbols(self):
+        old_sym_len = constants.SETTINGS.value('rel_symbol_length', type=int)
+        constants.SETTINGS.setValue('rel_symbol_length', 20)  # Set Symbol length for this test
+        s = Signal(get_path_for_data_file("vw_symbols.complex"), "VW")
+        s.noise_threshold = 0.0111
+        s.qad_center = 0.0470
+        s.bit_len = 500
+        s.modulation_type = 0  # ASK
+        pa = ProtocolAnalyzer(s)
+        pa.get_protocol_from_signal()
+        message = pa.messages[0]
+        for i in range(255):  # First 255 are bits
+            self.assertEqual(type(message[i]), bool)
+        for i in range(255, 261):
+            self.assertNotEqual(type(message[i]), bool)  # 6 Symbols
+            print("Symbol", message[i].name, "NSamples:", message[i].nsamples, "Pulsetype:", message[i].pulsetype)
+        symbols = message.plain_bits_str[255:261]
+        self.assertEqual(symbols, "ABABAB")
 
-        proto_analyzer = ProtocolAnalyzer(signal)
-        proto_analyzer.get_protocol_from_signal()
-        self.assertEqual(proto_analyzer.num_messages, 18)
-        messages = proto_analyzer.messages
-        self.assertLess(messages[0].rssi, messages[1].rssi)
-        self.assertGreater(messages[1].rssi, messages[2].rssi)
-        self.assertLess(messages[2].rssi, messages[3].rssi)
-        self.assertLess(messages[-2].rssi, messages[-1].rssi)
+        constants.SETTINGS.setValue('rel_symbol_length', old_sym_len)  # Restore Symbol Length

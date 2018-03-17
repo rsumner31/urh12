@@ -1,15 +1,30 @@
-import copy
+import unittest
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 
-from tests.QtTestCase import QtTestCase
+import tests.utils_testing
+from urh import constants
+from urh.controller.MainController import MainController
+from tests.utils_testing import get_path_for_data_file
+from urh.util.Logger import logger
+
+app = tests.utils_testing.get_app()
 
 
-class TestLabels(QtTestCase):
+class TestLabels(unittest.TestCase):
     def setUp(self):
-        super().setUp()
-        self.add_signal_to_form("esaver.complex")
+        self.old_sym_len = constants.SETTINGS.value('rel_symbol_length', type=int)
+        constants.SETTINGS.setValue('rel_symbol_length', 0) # Disable Symbols for this Test
+
+        logger.debug("Init form")
+        self.form = MainController()
+        logger.debug("Intiliazed form")
+        app.processEvents()
+        logger.debug("Add signal")
+        self.form.add_signalfile(get_path_for_data_file("esaver.complex"))
+        logger.debug("Added signal")
+        self.sframe = self.form.signal_tab_controller.signal_frames[0]
         self.cframe = self.form.compare_frame_controller
         self.cframe.ui.cbProtoView.setCurrentIndex(0)
         self.gframe = self.form.generator_tab_controller
@@ -17,24 +32,27 @@ class TestLabels(QtTestCase):
 
         # Create two labels on Compare Frame
         self.form.ui.tabWidget.setCurrentIndex(1)
-        self.cframe.add_protocol_label(start=0, end=40, messagenr=1, proto_view=0, edit_label_name=False)  # Sync
-        self.cframe.add_protocol_label(start=43, end=43, messagenr=2, proto_view=0, edit_label_name=False)  # FuzzBit
+        self.cframe.add_protocol_label(start=0, end=40, messagenr=1, proto_view=0, edit_label_name = False)  # Sync
+        self.cframe.add_protocol_label(start=43, end=43, messagenr=2, proto_view=0, edit_label_name = False)  # FuzzBit
 
         self.assertEqual(len(self.cframe.active_message_type), 2)
+
+    def tearDown(self):
+        constants.SETTINGS.setValue('rel_symbol_length', self.old_sym_len) # Restore Symbol Length
 
     def test_show_labels_only(self):
         self.cframe.ui.chkBoxOnlyShowLabelsInProtocol.setChecked(True)
         for i in range(0, 40):
-            self.assertFalse(self.cframe.ui.tblViewProtocol.isColumnHidden(i), msg="Bit " + str(i))
-        self.assertFalse(self.cframe.ui.tblViewProtocol.isColumnHidden(43), msg="Bit 43")
+            self.assertFalse(self.cframe.ui.tblViewProtocol.isColumnHidden(i), msg = "Bit " + str(i))
+        self.assertFalse(self.cframe.ui.tblViewProtocol.isColumnHidden(43), msg = "Bit 43")
         for i in range(44, self.cframe.protocol_model.col_count):
-            self.assertTrue(self.cframe.ui.tblViewProtocol.isColumnHidden(i), msg="Bit " + str(i))
+            self.assertTrue(self.cframe.ui.tblViewProtocol.isColumnHidden(i), msg = "Bit " + str(i))
 
         self.cframe.ui.cbProtoView.setCurrentIndex(1)  # Hex View
         for i in range(0, 10):
-            self.assertFalse(self.cframe.ui.tblViewProtocol.isColumnHidden(i), msg="Hex " + str(i))
+            self.assertFalse(self.cframe.ui.tblViewProtocol.isColumnHidden(i), msg = "Hex " + str(i))
         for i in range(13, self.cframe.protocol_model.col_count):
-            self.assertTrue(self.cframe.ui.tblViewProtocol.isColumnHidden(i), msg="Hex " + str(i))
+            self.assertTrue(self.cframe.ui.tblViewProtocol.isColumnHidden(i), msg = "Hex " + str(i))
 
     def test_generator_label(self):
         labels = self.cframe.proto_analyzer.protocol_labels
@@ -57,8 +75,7 @@ class TestLabels(QtTestCase):
         self.assertEqual(len(labels), 2)
 
         # Fuzz Label
-        lbl = copy.deepcopy(self.gframe.table_model.protocol.messages[0].message_type[1])
-        self.gframe.table_model.protocol.messages[0].message_type[1] = lbl
+        lbl = self.gframe.table_model.protocol.messages[0].message_type[1]
         lbl.fuzz_values.append("1")
         lbl.add_fuzz_value()
         lbl.add_fuzz_value()
@@ -95,6 +112,8 @@ class TestLabels(QtTestCase):
     def __check_background_is_drawn(self, lbl, lbl_start, lbl_end):
         pac = self.gframe.table_model.protocol
         for i in range(self.gframe.table_model.row_count):
+            labels_for_message = pac.messages[i].message_type
+            self.assertIn(lbl, labels_for_message)
             start, end = pac.messages[i].get_label_range(lbl, self.gframe.table_model.proto_view, False)
             self.assertEqual(start, lbl_start)
             self.assertEqual(end, lbl_end + 1)

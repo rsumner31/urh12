@@ -9,7 +9,6 @@ class LabelValueTableView(QTableView):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setItemDelegateForColumn(1, ComboBoxDelegate(ProtocolLabel.DISPLAY_FORMATS, parent=self))
-        self.setItemDelegateForColumn(2, ComboBoxDelegate(ProtocolLabel.DISPLAY_BIT_ORDERS, parent=self))
         self.setEditTriggers(QTableView.AllEditTriggers)
 
     def model(self) -> LabelValueTableModel:

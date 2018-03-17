@@ -34,32 +34,20 @@ class AbstractBaseThread(QThread):
         self._bandwidth = bandwidth
         self._freq_correction = 1
         self._direct_sampling_mode = 0
-        self._antenna_index = 0
-        self._channel_index = 0
         self._receiving = receiving  # False for Sender-Thread
         self.device_args = ""  # e.g. addr=192.168.10.2
         self.device = "USRP"
         self.current_index = 0
 
-        self.is_in_spectrum_mode = False
-
         self.context = None
         self.socket = None
 
-        gnuradio_path_file = os.path.join(tempfile.gettempdir(), "gnuradio_path.txt")
         if constants.SETTINGS.value("use_gnuradio_install_dir", False, bool):
             gnuradio_dir = constants.SETTINGS.value("gnuradio_install_dir", "")
-            with open(gnuradio_path_file, "w") as f:
+            with open(os.path.join(tempfile.gettempdir(), "gnuradio_path.txt"), "w") as f:
                 f.write(gnuradio_dir)
-            if os.path.isfile(os.path.join(gnuradio_dir, "gr-python27", "pythonw.exe")):
-                self.python2_interpreter = os.path.join(gnuradio_dir, "gr-python27", "pythonw.exe")
-            else:
-                self.python2_interpreter = os.path.join(gnuradio_dir, "gr-python27", "python.exe")
+            self.python2_interpreter = os.path.join(gnuradio_dir, "gr-python27", "python.exe")
         else:
-            try:
-                os.remove(gnuradio_path_file)
-            except OSError:
-                pass
             self.python2_interpreter = constants.SETTINGS.value("python2_exe", "")
 
         self.queue = Queue()
@@ -167,22 +155,6 @@ class AbstractBaseThread(QThread):
                 pass
 
     @property
-    def channel_index(self):
-        return self._channel_index
-
-    @channel_index.setter
-    def channel_index(self, value):
-        self._channel_index = value
-
-    @property
-    def antenna_index(self):
-        return self._antenna_index
-
-    @antenna_index.setter
-    def antenna_index(self, value):
-        self._antenna_index = value
-
-    @property
     def direct_sampling_mode(self):
         return self._direct_sampling_mode
 
@@ -200,12 +172,13 @@ class AbstractBaseThread(QThread):
         self.started.emit()
 
         if not hasattr(sys, 'frozen'):
-            rp = os.path.realpath(os.path.join(os.path.dirname(__file__), "scripts"))
+            rp = os.path.dirname(os.path.realpath(__file__))
         else:
-            rp = os.path.realpath(os.path.dirname(sys.executable))
+            rp = os.path.join(os.path.dirname(sys.executable), "dev", "gr")
 
+        rp = os.path.realpath(os.path.join(rp, "scripts"))
         suffix = "_recv.py" if self._receiving else "_send.py"
-        filename = self.device.lower().split(" ")[0] + suffix
+        filename = self.device.lower() + suffix
 
         if not self.python2_interpreter:
             raise Exception("Could not find python 2 interpreter. Make sure you have a running gnuradio installation.")
@@ -264,10 +237,7 @@ class AbstractBaseThread(QThread):
                 break
 
         result = b"".join(result)
-        try:
-            return result.decode("utf-8")
-        except UnicodeDecodeError:
-            return "Could not decode device message"
+        return result.decode("utf-8")
 
     def enqueue_output(self, out, queue):
         for line in iter(out.readline, b''):

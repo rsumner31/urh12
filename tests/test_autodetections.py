@@ -1,10 +1,10 @@
 import unittest
 
-from tests.utils_testing import get_path_for_data_file
 from urh.signalprocessing.Signal import Signal
-
+from tests.utils_testing import get_path_for_data_file
 
 class TestAutodetections(unittest.TestCase):
+    # Testmethode muss immer mit Präfix test_* starten
     def test_auto_detect_esaver(self):
         signal = Signal(get_path_for_data_file("esaver.complex"), "ESaver")
         signal.modulation_type = 1

@@ -1,6 +1,8 @@
 import importlib
 import os
 
+import sys
+
 from urh import constants
 from urh.plugins.Plugin import Plugin, ProtocolPlugin
 from urh.util.Logger import logger
@@ -8,7 +10,14 @@ from urh.util.Logger import logger
 
 class PluginManager(object):
     def __init__(self):
-        self.plugin_path = os.path.dirname(os.path.realpath(__file__))
+        if hasattr(sys, 'frozen'):
+            exe_path = sys.executable
+            if os.path.islink(exe_path):
+                exe_path = os.readlink(exe_path)
+            self.plugin_path = os.path.realpath(os.path.join(exe_path, "..", "plugins"))
+            sys.path.append(os.path.realpath(os.path.join(exe_path, "..")))
+        else:
+            self.plugin_path = os.path.dirname(os.path.realpath(__file__))
         self.installed_plugins = self.load_installed_plugins()
 
     @property
@@ -19,7 +28,7 @@ class PluginManager(object):
         """ :rtype: list of Plugin """
         result = []
         plugin_dirs = [d for d in os.listdir(self.plugin_path) if os.path.isdir(os.path.join(self.plugin_path, d))]
-        settings = constants.SETTINGS
+        settings  = constants.SETTINGS
 
         for d in plugin_dirs:
             if d == "__pycache__":
@@ -29,6 +38,7 @@ class PluginManager(object):
                 plugin = class_module()
                 plugin.plugin_path = os.path.join(self.plugin_path, plugin.name)
                 plugin.load_description()
+                plugin.load_settings_frame()
                 plugin.enabled = settings.value(plugin.name, type=bool) if plugin.name in settings.allKeys() else False
                 result.append(plugin)
             except ImportError as e:
@@ -40,7 +50,10 @@ class PluginManager(object):
     @staticmethod
     def load_plugin(plugin_name):
         classname = plugin_name + "Plugin"
-        module_path = "urh.plugins." + plugin_name + "." + classname
+        if hasattr(sys, 'frozen'):
+            module_path = "plugins." + plugin_name + "." + classname
+        else:
+            module_path = "urh.plugins." + plugin_name + "." + classname
 
         module = importlib.import_module(module_path)
         return getattr(module, classname)

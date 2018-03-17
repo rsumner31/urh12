@@ -1,58 +1,25 @@
 import os
-import platform
+
 import sys
+import platform
 import tempfile
 from collections import defaultdict
 from distutils import ccompiler
-from importlib import import_module
 
-import shutil
+import pickle
 from setuptools import Extension
+
 
 USE_RELATIVE_PATHS = False
 
 DEVICES = {
-    "airspy": {"lib": "airspy", "test_function": "open"},
     "hackrf": {"lib": "hackrf", "test_function": "hackrf_init"},
-    "limesdr": {"lib": "LimeSuite", "test_function": "LMS_GetDeviceList"},
     "rtlsdr": {"lib": "rtlsdr", "test_function": "rtlsdr_set_tuner_bandwidth"},
-    # Use C only for USRP to avoid boost dependency
-    "usrp": {"lib": "uhd", "test_function": "uhd_usrp_find", "language": "c"},
-    "sdrplay": {"lib": "mir_sdr_api" if sys.platform == "win32" else "mirsdrapi-rsp",
-                "test_function": "mir_sdr_ApiVersion"}
 }
 
 FALLBACKS = {
     "rtlsdr": {"lib": "rtlsdr", "test_function": "rtlsdr_get_device_name"}
 }
-
-
-def compiler_has_function(compiler, function_name, libraries, library_dirs, include_dirs) -> bool:
-    tmp_dir = tempfile.mkdtemp(prefix='urh-')
-    devnull = old_stderr = None
-    try:
-        try:
-            file_name = os.path.join(tmp_dir, '{}.c'.format(function_name))
-            f = open(file_name, 'w')
-            f.write('int main(void) {\n')
-            f.write('    %s();\n' % function_name)
-            f.write('}\n')
-            f.close()
-            # Redirect stderr to /dev/null to hide any error messages from the compiler.
-            devnull = open(os.devnull, 'w')
-            old_stderr = os.dup(sys.stderr.fileno())
-            os.dup2(devnull.fileno(), sys.stderr.fileno())
-            objects = compiler.compile([file_name], include_dirs=include_dirs)
-            compiler.link_executable(objects, os.path.join(tmp_dir, "a.out"), library_dirs=library_dirs, libraries=libraries)
-        except Exception as e:
-            return False
-        return True
-    finally:
-        if old_stderr is not None:
-            os.dup2(old_stderr, sys.stderr.fileno())
-        if devnull is not None:
-            devnull.close()
-        shutil.rmtree(tmp_dir)
 
 
 def get_device_extensions(use_cython: bool, library_dirs=None):
@@ -66,7 +33,7 @@ def get_device_extensions(use_cython: bool, library_dirs=None):
             return []  # only 64 bit python supported for native device backends
 
         result = []
-        lib_dir = os.path.realpath(os.path.join(cur_dir, "lib/win/x64"))
+        lib_dir = os.path.realpath(os.path.join(cur_dir, "lib/win"))
         for dev_name, params in DEVICES.items():
             result.append(get_device_extension(dev_name, [params["lib"]], [lib_dir], include_dirs))
 
@@ -103,54 +70,40 @@ def get_device_extensions(use_cython: bool, library_dirs=None):
     compiler = ccompiler.new_compiler()
     for dev_name, params in DEVICES.items():
         if build_device_extensions[dev_name] == 0:
-            print("Skipping native {0} support".format(dev_name))
+            print("\nSkipping native {0} support\n".format(dev_name))
             continue
         if build_device_extensions[dev_name] == 1:
-            print("Enforcing native {0} support".format(dev_name))
+            print("\nEnforcing native {0} support\n".format(dev_name))
             result.append(
                 get_device_extension(dev_name, [params["lib"]], library_dirs, include_dirs, use_cython))
             continue
 
-        if compiler_has_function(compiler, params["test_function"], (params["lib"],), library_dirs, include_dirs):
-            print("Found {0} lib. Will compile with native {1} support".format(params["lib"], dev_name))
+        if compiler.has_function(params["test_function"], libraries=(params["lib"],), library_dirs=library_dirs,
+                                 include_dirs=include_dirs):
+            print("\nFound {0} lib. Will compile with native {1} support\n".format(params["lib"], dev_name))
             result.append(
                 get_device_extension(dev_name, [params["lib"]], library_dirs, include_dirs, use_cython))
         elif dev_name in FALLBACKS:
             print("Trying fallback for {0}".format(dev_name))
             params = FALLBACKS[dev_name]
             dev_name += "_fallback"
-            if compiler_has_function(compiler, params["test_function"], (params["lib"],), library_dirs, include_dirs):
-                print("Found fallback. Will compile with native {0} support".format(dev_name))
+            if compiler.has_function(params["test_function"], libraries=(params["lib"],), library_dirs=library_dirs,
+                                     include_dirs=include_dirs):
+                print("\nFound fallback. Will compile with native {0} support\n".format(dev_name))
                 result.append(
                     get_device_extension(dev_name, [params["lib"]], library_dirs, include_dirs, use_cython))
         else:
-            print("Skipping native support for {1}".format(params["lib"], dev_name))
-
-        # remove Temp file for checking
+            print("\nSkipping native support for {1}\n".format(params["lib"], dev_name))
         try:
-            os.remove("a.out")
+            os.remove("a.out")  # Temp file for checking
         except OSError:
             pass
-
-        for filename in os.listdir(tempfile.gettempdir()):
-            dev_name = dev_name.replace("_fallback", "")
-            func_names = [DEVICES[dev_name]["test_function"]]
-            if dev_name in FALLBACKS:
-                func_names.append(FALLBACKS[dev_name]["test_function"])
-
-            if any(filename.startswith(func_name) for func_name in func_names) and filename.endswith(".c"):
-                os.remove(os.path.join(tempfile.gettempdir(), filename))
 
     return result
 
 
 def get_device_extension(dev_name: str, libraries: list, library_dirs: list, include_dirs: list, use_cython=False):
-    try:
-        language = DEVICES[dev_name]["language"]
-    except KeyError:
-        language = "c++"
-
-    file_ext = "pyx" if use_cython else "cpp" if language == "c++" else "c"
+    file_ext = "pyx" if use_cython else "cpp"
     cur_dir = os.path.dirname(os.path.realpath(__file__))
     if USE_RELATIVE_PATHS:
         # We need relative paths on windows
@@ -161,40 +114,16 @@ def get_device_extension(dev_name: str, libraries: list, library_dirs: list, inc
     return Extension("urh.dev.native.lib." + dev_name,
                      [cpp_file_path],
                      libraries=libraries, library_dirs=library_dirs,
-                     include_dirs=include_dirs, language=language)
-
-
-def perform_health_check() -> str:
-    result = []
-    for device in sorted(DEVICES.keys()):
-        try:
-            _ = import_module("urh.dev.native.lib." + device)
-            result.append(device + " -- OK")
-        except ImportError as e:
-            if device in FALLBACKS:
-                try:
-                    _ = import_module("urh.dev.native.lib." + device + "_fallback")
-                    result.append(device + " -- OK (using fallback)")
-                    continue
-                except ImportError:
-                    pass
-
-            result.append(device + " -- ERROR: " + str(e))
-
-    return "\n".join(result)
+                     include_dirs=include_dirs, language="c++")
 
 
 if __name__ == "__main__":
     from setuptools import setup
-    if "-L" in sys.argv:
-        library_dirs = sys.argv[sys.argv.index("-L")+1].split(":")
-    else:
-        library_dirs = None
 
-    cur_dir = os.path.dirname(os.path.realpath(__file__))
-    os.chdir("..")
+    extensions = pickle.load(open(os.path.join(tempfile.gettempdir(), "native_extensions"), "rb"))
+    assert isinstance(extensions, list)
 
     setup(
         name="urh",
-        ext_modules=get_device_extensions(use_cython=False, library_dirs=library_dirs),
+        ext_modules=extensions,
     )

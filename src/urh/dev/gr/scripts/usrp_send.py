@@ -6,9 +6,19 @@
 ##################################################
 
 from optparse import OptionParser
-import Initializer
 
-Initializer.init_path()
+import tempfile
+import os
+import sys
+try:
+    with open(os.path.join(tempfile.gettempdir(), "gnuradio_path.txt"), "r") as f:
+        gnuradio_path = f.read().strip()
+
+    os.environ["PATH"] = os.path.join(gnuradio_path, "bin")
+    sys.path.insert(0, os.path.join(gnuradio_path, "lib", "site-packages"))
+
+except IOError:
+    pass
 
 from gnuradio import gr
 from gnuradio import uhd
@@ -41,7 +51,7 @@ class top_block(gr.top_block):
         self.uhd_usrp_sink_0.set_center_freq(freq, 0)
         self.uhd_usrp_sink_0.set_gain(gain, 0)
         self.uhd_usrp_sink_0.set_bandwidth(bw, 0)
-        self.zeromq_pull_source_0 = zeromq.pull_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:'+str(port))
+        self.zeromq_pull_source_0 = zeromq.pull_source(gr.sizeof_gr_complex, 1, 'tcp://127.0.0.1:'+str(port), 100, False)
 
         ##################################################
         # Connections

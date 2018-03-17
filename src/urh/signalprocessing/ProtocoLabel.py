@@ -1,7 +1,7 @@
-import xml.etree.ElementTree as ET
+from enum import Enum
 
-import copy
 from PyQt5.QtCore import Qt
+import xml.etree.ElementTree as ET
 
 from urh.signalprocessing.FieldType import FieldType
 from urh.signalprocessing.Interval import Interval
@@ -10,23 +10,16 @@ from urh.util.Formatter import Formatter
 
 class ProtocolLabel(object):
     """
-    This represents a field in the protocol, e.g. temperature
-    Field range is described by (start, end) and it's value by value
-    start and end always refer to bit view!
+    Eine Eigenschaft des Protokolls (zum Beispiel Temperatur), die an einer bestimmten Stelle steht.
+    Die Stelle wird durch (from, to) beschrieben und der Wert der Eigenschaft durch Value.
+    From und To beziehen sich immer auf die Bitdarstellung des Protokolls!
     """
 
-    DISPLAY_FORMATS = ["Bit", "Hex", "ASCII", "Decimal", "BCD"]
-
-    DISPLAY_BIT_ORDERS = ["MSB", "LSB", "LSD"]
-
+    DISPLAY_FORMATS = ["Bit", "Hex", "ASCII", "Decimal"]
     SEARCH_TYPES = ["Number", "Bits", "Hex", "ASCII"]
 
-    __slots__ = ("__name", "start", "end", "apply_decoding", "color_index", "show", "__fuzz_me", "fuzz_values",
-                 "fuzz_created", "__field_type", "display_format_index", "display_bit_order_index",
-                 "auto_created", "copied")
-
     def __init__(self, name: str, start: int, end: int, color_index: int, fuzz_created=False,
-                 auto_created=False, field_type: FieldType = None):
+                 auto_created=False, type:FieldType=None):
         self.__name = name
         self.start = start
         self.end = end + 1
@@ -35,46 +28,25 @@ class ProtocolLabel(object):
         self.color_index = color_index
         self.show = Qt.Checked
 
-        self.__fuzz_me = Qt.Checked
+        self.fuzz_me = Qt.Checked
         self.fuzz_values = []
 
         self.fuzz_created = fuzz_created
 
-        self.__field_type = field_type  # type: FieldType
+        self.__type = type # type: FieldType
 
-        self.display_format_index = 0 if field_type is None else field_type.display_format_index
-        self.display_bit_order_index = 0
+        self.display_format_index = 0 if type is None else type.display_format_index
 
         self.auto_created = auto_created
 
-        self.copied = False  # keep track if label was already copied for COW in generation to avoid needless recopy
-
     @property
-    def fuzz_me(self) -> int:
-        return self.__fuzz_me
+    def type(self) -> FieldType:
+        return self.__type
 
-    @fuzz_me.setter
-    def fuzz_me(self, value):
-        if isinstance(value, bool):
-            value = Qt.Checked if value else Qt.Unchecked
-        self.__fuzz_me = value
-
-    @property
-    def is_preamble(self) -> bool:
-        return self.field_type is not None and self.field_type.function == FieldType.Function.PREAMBLE
-
-    @property
-    def is_sync(self) -> bool:
-        return self.field_type is not None and self.field_type.function == FieldType.Function.SYNC
-
-    @property
-    def field_type(self) -> FieldType:
-        return self.__field_type
-
-    @field_type.setter
-    def field_type(self, value: FieldType):
-        if value != self.field_type:
-            self.__field_type = value
+    @type.setter
+    def type(self, value: FieldType):
+        if value != self.type:
+            self.__type = value
             # set viewtype for type
             if hasattr(value, "display_format_index"):
                 self.display_format_index = value.display_format_index
@@ -104,14 +76,6 @@ class ProtocolLabel(object):
         upper_limit = 2 ** (self.end - self.start)
         return len(self.fuzz_values) == upper_limit
 
-    def get_copy(self):
-        if self.copied:
-            return self
-        else:
-            result = copy.deepcopy(self)
-            result.copied = True
-            return result
-
     def __lt__(self, other):
         if self.start != other.start:
             return self.start < other.start
@@ -123,7 +87,7 @@ class ProtocolLabel(object):
             return False
 
     def __eq__(self, other):
-        return self.start == other.start and self.end == other.end and self.name == other.name and self.field_type == other.field_type
+        return self.start == other.start and self.end == other.end and self.name == other.name and self.type == other.type
 
     def __hash__(self):
         return hash("{}/{}/{}".format(self.start, self.end, self.name))
@@ -147,24 +111,22 @@ class ProtocolLabel(object):
         format_string = "{0:0" + str(len(cur_val)) + "b}"
         self.fuzz_values.append(format_string.format(val))
 
-    def to_xml(self) -> ET.Element:
-        return ET.Element("label", attrib={"name": self.__name, "start": str(self.start), "end": str(self.end),
-                                           "color_index": str(self.color_index),
-                                           "apply_decoding": str(self.apply_decoding), "show": str(self.show),
-                                           "display_format_index": str(self.display_format_index),
-                                           "display_bit_order_index": str(self.display_bit_order_index),
-                                           "fuzz_me": str(self.fuzz_me), "fuzz_values": ",".join(self.fuzz_values),
-                                           "auto_created": str(self.auto_created)})
+    def to_xml(self, index:int) -> ET.Element:
+        return ET.Element("label", attrib={ "name": self.__name, "start": str(self.start), "end": str(self.end), "color_index": str(self.color_index),
+                                            "apply_decoding": str(self.apply_decoding), "index": str(index),
+                                            "show": str(self.show), "display_format_index": str(self.display_format_index),
+                                            "fuzz_me": str(self.fuzz_me), "fuzz_values": ",".join(self.fuzz_values),
+                                            "auto_created": str(self.auto_created), "type_id": self.type.id if self.type is not None else ""})
 
-    @classmethod
-    def from_xml(cls, tag: ET.Element, field_types_by_caption=None):
+    @staticmethod
+    def from_xml(tag: ET.Element, field_types_by_type_id=None):
         """
 
         :param tag:
-        :type field_types_by_caption: dict[str, FieldType]
+        :type field_types_by_type_id: dict[str, FieldType]
         :return:
         """
-        field_types_by_caption = dict() if field_types_by_caption is None else field_types_by_caption
+        field_types_by_type_id = dict() if field_types_by_type_id is None else field_types_by_type_id
 
         name = tag.get("name")
         start, end = int(tag.get("start", 0)), int(tag.get("end", 0)) - 1
@@ -175,15 +137,12 @@ class ProtocolLabel(object):
         result.show = Qt.Checked if Formatter.str2val(tag.get("show", 0), int) else Qt.Unchecked
         result.fuzz_me = Qt.Checked if Formatter.str2val(tag.get("fuzz_me", 0), int) else Qt.Unchecked
         result.fuzz_values = tag.get("fuzz_values", "").split(",")
-        result.auto_created = True if tag.get("auto_created", 'False') == "True" else False
-
-        if result.name in field_types_by_caption:
-            result.field_type = field_types_by_caption[result.name]
-        else:
-            result.field_type = None
-
-        # set this after result.field_type because this would change display_format_index to field_types default
         result.display_format_index = int(tag.get("display_format_index", 0))
-        result.display_bit_order_index = int(tag.get("display_bit_order_index", 0))
+        result.auto_created =  True if tag.get("auto_created", 'False') == "True" else False
+        type_id = tag.get("type_id", None)
+        if type_id and type_id in field_types_by_type_id:
+            result.type = field_types_by_type_id[type_id]
+        else:
+            result.type = None
 
         return result

@@ -66,7 +66,9 @@ class FieldTypeTableModel(QAbstractTableModel):
             except ValueError:
                 return False
 
-            return True
+            return  True
 
     def flags(self, index: QModelIndex):
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable
+
+

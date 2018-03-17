@@ -1,18 +1,15 @@
 import struct
-# noinspection PyUnresolvedReferences
-cimport numpy as np
-import numpy as np
+
 from PyQt5.QtCore import QByteArray, QDataStream
 from PyQt5.QtGui import QPainterPath
 
-# As we do not use any numpy C API functions we do no import_array here,
-# because it can lead to OS X error: https://github.com/jopohl/urh/issues/273
-# np.import_array()
-
+# noinspection PyUnresolvedReferences
+import numpy as np
+cimport numpy as np
+import  cython
 from cython.parallel import prange
 
 from urh import constants
-import math
 
 cpdef create_path(float[:] samples, long long start, long long end, list subpath_ranges=None):
     cdef float[:] values
@@ -27,15 +24,11 @@ cpdef create_path(float[:] samples, long long start, long long end, list subpath
 
     samples_per_pixel = <long long>(num_samples / pixels_on_path)
 
-    cdef int num_threads = 0
-    if samples_per_pixel < 20000:
-        num_threads = 1
-
     if samples_per_pixel > 1:
         sample_rng = np.arange(start, end, samples_per_pixel, dtype=np.int64)
         values = np.zeros(2 * len(sample_rng), dtype=np.float32, order="C")
         scale_factor = num_samples / (2.0 * len(sample_rng))  # 2.0 is important to make it a float division!
-        for i in prange(start, end, samples_per_pixel, nogil=True, schedule='static', num_threads=num_threads):
+        for i in prange(start, end, samples_per_pixel, nogil=True, schedule='static'):
             chunk_end = i + samples_per_pixel
             if chunk_end >= end:
                 chunk_end = end
@@ -64,14 +57,10 @@ cpdef create_path(float[:] samples, long long start, long long end, list subpath
     cdef list result = []
     if scale_factor == 0:
         scale_factor = 1  # prevent division by zero
-
     for subpath_range in subpath_ranges:
-        sub_start = ((((subpath_range[0]-start)/scale_factor) * scale_factor) - 2*scale_factor) / scale_factor
-        sub_start =int(max(0, math.floor(sub_start)))
-        sub_end = ((((subpath_range[1]-start)/scale_factor) * scale_factor) + 2*scale_factor) / scale_factor
-        sub_end = int(max(0, math.ceil(sub_end)))
-        result.append(array_to_QPath(x[sub_start:sub_end], values[sub_start:sub_end]))
-
+        substart = int((subpath_range[0]-start)/scale_factor)
+        subend = int((subpath_range[1]-start)/scale_factor)
+        result.append(array_to_QPath(x[substart:subend], values[substart:subend]))
     return result
 
 
@@ -92,29 +81,28 @@ cpdef array_to_QPath(np.int64_t[:] x, float[:] y):
 
      All values are big endian--pack using struct.pack('>d') or struct.pack('>i')
     """
+    path = QPainterPath()
     cdef long long n = x.shape[0]
     # create empty array, pad with extra space on either end
-    arr = np.zeros(n + 2, dtype=[('x', '>f8'), ('y', '>f8'), ('c', '>i4')])
+    arr = np.empty(n + 2, dtype=[('x', '>f8'), ('y', '>f8'), ('c', '>i4')])
     #arr = arr.byteswap().newbyteorder() # force native byteorder
-
     # write first two integers
-    byte_view = arr.view(dtype=np.uint8)
-    byte_view[:12] = 0
-    byte_view.data[12:20] = struct.pack('>ii', n, 0)
+    byteview = arr.view(dtype=np.uint8)
+    byteview[:12] = 0
+    byteview.data[12:20] = struct.pack('>ii', n, 0)
 
     arr[1:-1]['x'] = x
     arr[1:-1]['y'] = np.negative(y)  # y negieren, da Koordinatensystem umgedreht
     arr[1:-1]['c'] = 1
 
-    cdef long long last_index = 20 * (n + 1)
-    byte_view.data[last_index:last_index + 4] = struct.pack('>i', 0)
+    cdef long long lastInd = 20 * (n + 1)
+    byteview.data[lastInd:lastInd + 4] = struct.pack('>i', 0)
 
     try:
-        buf = QByteArray.fromRawData(byte_view.data[12:last_index + 4])
+        buf = QByteArray.fromRawData(byteview.data[12:lastInd + 4])
     except TypeError:
-        buf = QByteArray(byte_view.data[12:last_index + 4])
+        buf = QByteArray(byteview.data[12:lastInd + 4])
 
-    path = QPainterPath()
     ds = QDataStream(buf)
     ds >> path
 

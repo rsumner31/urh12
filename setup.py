@@ -1,11 +1,8 @@
 import os
 import sys
-import tempfile
 
 if sys.version_info < (3, 4):
     print("You need at least Python 3.4 for this application!")
-    if sys.version_info[0] < 3:
-        print("try running with python3 {}".format(" ".join(sys.argv)))
     sys.exit(1)
 
 try:
@@ -20,14 +17,11 @@ from src.urh.dev.native import ExtensionHelper
 import src.urh.version as version
 
 if sys.platform == "win32":
-    OPEN_MP_FLAG = "/openmp"
-    NO_NUMPY_WARNINGS_FLAG = ""
+    OPEN_MP_FLAG = "-openmp"
 elif sys.platform == "darwin":
     OPEN_MP_FLAG = ""  # no OpenMP support in default Mac OSX compiler
-    NO_NUMPY_WARNINGS_FLAG = "-Wno-#warnings"
 else:
     OPEN_MP_FLAG = "-fopenmp"
-    NO_NUMPY_WARNINGS_FLAG = "-Wno-cpp"
 
 COMPILER_DIRECTIVES = {'language_level': 3,
                        'cdivision': True,
@@ -39,8 +33,6 @@ COMPILER_DIRECTIVES = {'language_level': 3,
 UI_SUBDIRS = ("actions", "delegates", "views")
 PLUGINS = [path for path in os.listdir("src/urh/plugins") if os.path.isdir(os.path.join("src/urh/plugins", path))]
 URH_DIR = "urh"
-
-IS_RELEASE = os.path.isfile(os.path.join(tempfile.gettempdir(), "urh_releasing"))
 
 try:
     import Cython.Build
@@ -77,42 +69,28 @@ def get_package_data():
     for plugin in PLUGINS:
         package_data["urh.plugins." + plugin] = ['*.ui', "*.txt"]
 
-    package_data["urh.dev.native.lib"] = ["*.cpp", "*.c", "*.pyx", "*.pxd"]
+    is_release = os.path.isfile("/tmp/urh_releasing")  # make sure precompiled binding are uploaded to PyPi
+
+    package_data["urh.dev.native.lib"] = ["*.cpp", "*.pyx", "*.pxd"]
 
     # Bundle headers
     package_data["urh.dev.native.includes"] = ["*.h"]
-    include_dir = "src/urh/dev/native/includes"
-    for dirpath, dirnames, filenames in os.walk(include_dir):
-        for dir_name in dirnames:
-            rel_dir_path = os.path.relpath(os.path.join(dirpath, dir_name), include_dir)
-            package_data["urh.dev.native.includes."+rel_dir_path.replace(os.sep, ".")] = ["*.h"]
+    package_data["urh.dev.native.includes.libhackrf"] = ["*.h"]
 
-    if sys.platform == "win32" or IS_RELEASE:
+    if sys.platform == "win32" or is_release:
         # we use precompiled device backends on windows
-        # only deploy DLLs on Windows or in release mode to prevent deploying by linux package managers
-        package_data["urh.dev.native.lib.win.x64"] = ["*"]
-        package_data["urh.dev.native.lib.win.x86"] = ["*"]
+        package_data["urh.dev.native.lib.win"] = ["*"]
 
     return package_data
 
 
-def get_extensions():
+def get_ext_modules():
     filenames = [os.path.splitext(f)[0] for f in os.listdir("src/urh/cythonext") if f.endswith(EXT)]
+
     extensions = [Extension("urh.cythonext." + f, ["src/urh/cythonext/" + f + EXT],
                             extra_compile_args=[OPEN_MP_FLAG],
                             extra_link_args=[OPEN_MP_FLAG],
                             language="c++") for f in filenames]
-
-    ExtensionHelper.USE_RELATIVE_PATHS = True
-    extensions += ExtensionHelper.get_device_extensions(USE_CYTHON)
-
-    if NO_NUMPY_WARNINGS_FLAG:
-        for extension in extensions:
-            extension.extra_compile_args.append(NO_NUMPY_WARNINGS_FLAG)
-
-    if USE_CYTHON:
-        from Cython.Build import cythonize
-        extensions = cythonize(extensions, compiler_directives=COMPILER_DIRECTIVES, quiet=True)
 
     return extensions
 
@@ -120,27 +98,26 @@ def get_extensions():
 def read_long_description():
     try:
         import pypandoc
-        with open("README.md") as f:
-            text = f.read()
-
-        # Remove screenshots as they get rendered poorly on PyPi
-        stripped_text = text[:text.index("# Screenshots")].rstrip()
-        return pypandoc.convert_text(stripped_text, 'rst', format='md')
-    except:
+        return pypandoc.convert('README.md', 'rst')
+    except(IOError, ImportError, RuntimeError):
         return ""
 
 install_requires = ["numpy", "psutil", "pyzmq"]
-if IS_RELEASE:
+try:
+    import PyQt5
+except ImportError:
     install_requires.append("pyqt5")
-else:
-    try:
-        import PyQt5
-    except ImportError:
-        install_requires.append("pyqt5")
 
 if sys.version_info < (3, 4):
     install_requires.append('enum34')
 
+ExtensionHelper.USE_RELATIVE_PATHS = True
+extensions = get_ext_modules() + ExtensionHelper.get_device_extensions(USE_CYTHON)
+
+if USE_CYTHON:
+    from Cython.Build import cythonize
+
+    extensions = cythonize(extensions, compiler_directives=COMPILER_DIRECTIVES)
 
 setup(
     name="urh",
@@ -157,7 +134,7 @@ setup(
     install_requires=install_requires,
     setup_requires=['numpy'],
     packages=get_packages(),
-    ext_modules=get_extensions(),
+    ext_modules=extensions,
     cmdclass={'build_ext': build_ext},
     zip_safe=False,
     entry_points={

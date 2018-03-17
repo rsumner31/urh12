@@ -1,9 +1,9 @@
-import math
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QAction
 
 from urh import constants
+from urh.signalprocessing.ProtocolAnalyzer import ProtocolAnalyzer
 from urh.ui.views.EditableGraphicView import EditableGraphicView
 
 
@@ -21,6 +21,9 @@ class EpicGraphicView(EditableGraphicView):
         self.participants_assign_enabled = True
         self.cache_qad = True
         self.y_sep = 0
+
+        self.parent_frame = self.parent().parent().parent()
+        self._init_undo_stack(self.parent_frame.undo_stack)
 
         self.save_action = QAction(self.tr("Save"), self)  # type: QAction
         self.save_action.setIcon(QIcon.fromTheme("document-save"))
@@ -41,15 +44,28 @@ class EpicGraphicView(EditableGraphicView):
         raise ValueError("Not implemented for epic graphic view")
 
     @property
+    def signal(self):
+        return self.parent_frame.signal
+
+    @property
+    def protocol(self) -> ProtocolAnalyzer:
+        return self.parent_frame.proto_analyzer
+
+    @property
+    def scene_type(self):
+        return self.parent_frame.ui.cbSignalView.currentIndex()
+
+    @property
     def selected_messages(self):
-        if self.something_is_selected and self.protocol:
-            sb, _, eb, _ = self.protocol.get_bitseq_from_selection(self.selection_area.start, abs(self.selection_area.width))
-            return self.protocol.messages[sb:eb + 1]
+        if not self.selection_area.is_empty:
+            pa = self.parent_frame.proto_analyzer
+            sb, _, eb, _ = pa.get_bitseq_from_selection(self.selection_area.start, abs(self.selection_area.width), self.signal.bit_len)
+            return pa.messages[sb:eb + 1]
         else:
             return []
 
     def is_pos_in_separea(self, pos: QPoint):
-        if self.scene_type != 1:
+        if self.scene_type == 0:
             return False
         padding = constants.SEPARATION_PADDING * self.view_rect().height()
         return self.y_sep - padding <= pos.y() <= self.y_sep + padding
@@ -57,8 +73,8 @@ class EpicGraphicView(EditableGraphicView):
     def _get_sub_path_ranges_and_colors(self, start: float, end: float):
         sub_path_ranges = []
         colors = []
-        start = max(0, int(start))
-        end = int(math.ceil(end))
+        start = int(start) if start > 0 else 0
+        end = int(end) if end == int(end) else int(end) + 1
 
         if not self.protocol.messages:
             return None, None
@@ -69,9 +85,6 @@ class EpicGraphicView(EditableGraphicView):
 
             color = None if message.participant is None else constants.PARTICIPANT_COLORS[
                 message.participant.color_index]
-
-            if color is None:
-                continue
 
             # Append the pause until first bit of message
             sub_path_ranges.append((start, message.bit_sample_pos[0]))
@@ -86,7 +99,7 @@ class EpicGraphicView(EditableGraphicView):
                 break
 
             # Data part of the message
-            sub_path_ranges.append((message.bit_sample_pos[0], message.bit_sample_pos[-2] + 1))
+            sub_path_ranges.append((message.bit_sample_pos[0], message.bit_sample_pos[-2]))
             colors.append(color)
 
             start = message.bit_sample_pos[-2] + 1

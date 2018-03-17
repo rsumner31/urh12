@@ -1,0 +1,1482 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta content="width=300, initial-scale=1" name="viewport">
+  <meta name="google-site-verification" content="LrdTUW9psUAMbh4Ia074-BPEVmcpBxF6Gwf0MSgQXZs">
+  <title>Sign in - Google Accounts</title>
+  <style>
+  @font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Open Sans Light'), local('OpenSans-Light'), url(//fonts.gstatic.com/s/opensans/v15/mem5YaGs126MiZpBA-UN_r8OUuhs.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(//fonts.gstatic.com/s/opensans/v15/mem8YaGs126MiZpBA-UFVZ0e.ttf) format('truetype');
+}
+  </style>
+  <style>
+  h1, h2 {
+  -webkit-animation-duration: 0.1s;
+  -webkit-animation-name: fontfix;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-delay: 0;
+  }
+  @-webkit-keyframes fontfix {
+  from {
+  opacity: 1;
+  }
+  to {
+  opacity: 1;
+  }
+  }
+  </style>
+<style>
+  html, body {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  position: absolute;
+  height: 100%;
+  min-width: 100%;
+  font-size: 13px;
+  color: #404040;
+  direction: ltr;
+  -webkit-text-size-adjust: none;
+  }
+  button,
+  input[type=button],
+  input[type=submit] {
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  }
+  a,
+  a:hover,
+  a:visited {
+  color: #427fed;
+  cursor: pointer;
+  text-decoration: none;
+  }
+  a:hover {
+  text-decoration: underline;
+  }
+  h1 {
+  font-size: 20px;
+  color: #262626;
+  margin: 0 0 15px;
+  font-weight: normal;
+  }
+  h2 {
+  font-size: 14px;
+  color: #262626;
+  margin: 0 0 15px;
+  font-weight: bold;
+  }
+  input[type=email],
+  input[type=number],
+  input[type=password],
+  input[type=tel],
+  input[type=text],
+  input[type=url] {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-block;
+  height: 36px;
+  padding: 0 8px;
+  margin: 0;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-top: 1px solid #c0c0c0;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -moz-border-radius: 1px;
+  -webkit-border-radius: 1px;
+  border-radius: 1px;
+  font-size: 15px;
+  color: #404040;
+  }
+  input[type=email]:hover,
+  input[type=number]:hover,
+  input[type=password]:hover,
+  input[type=tel]:hover,
+  input[type=text]:hover,
+  input[type=url]:hover {
+  border: 1px solid #b9b9b9;
+  border-top: 1px solid #a0a0a0;
+  -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  }
+  input[type=email]:focus,
+  input[type=number]:focus,
+  input[type=password]:focus,
+  input[type=tel]:focus,
+  input[type=text]:focus,
+  input[type=url]:focus {
+  outline: none;
+  border: 1px solid #4d90fe;
+  -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  }
+  input[type=checkbox],
+  input[type=radio] {
+  -webkit-appearance: none;
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  cursor: pointer;
+  vertical-align: bottom;
+  background: #fff;
+  border: 1px solid #c6c6c6;
+  -moz-border-radius: 1px;
+  -webkit-border-radius: 1px;
+  border-radius: 1px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
+  }
+  input[type=checkbox]:active,
+  input[type=radio]:active {
+  background: #ebebeb;
+  }
+  input[type=checkbox]:hover {
+  border-color: #c6c6c6;
+  -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  }
+  input[type=radio] {
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  border-radius: 1em;
+  width: 15px;
+  height: 15px;
+  }
+  input[type=checkbox]:checked,
+  input[type=radio]:checked {
+  background: #fff;
+  }
+  input[type=radio]:checked::after {
+  content: '';
+  display: block;
+  position: relative;
+  top: 3px;
+  left: 3px;
+  width: 7px;
+  height: 7px;
+  background: #666;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  border-radius: 1em;
+  }
+  input[type=checkbox]:checked::after {
+  content: url(https://ssl.gstatic.com/ui/v1/menu/checkmark.png);
+  display: block;
+  position: absolute;
+  top: -6px;
+  left: -5px;
+  }
+  input[type=checkbox]:focus {
+  outline: none;
+  border-color: #4d90fe;
+  }
+  .stacked-label {
+  display: block;
+  font-weight: bold;
+  margin: .5em 0;
+  }
+  .hidden-label {
+  position: absolute !important;
+  clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 0px;
+  width: 0px;
+  overflow: hidden;
+  visibility: hidden;
+  }
+  input[type=checkbox].form-error,
+  input[type=email].form-error,
+  input[type=number].form-error,
+  input[type=password].form-error,
+  input[type=text].form-error,
+  input[type=tel].form-error,
+  input[type=url].form-error {
+  border: 1px solid #dd4b39;
+  }
+  .error-msg {
+  margin: .5em 0;
+  display: block;
+  color: #dd4b39;
+  line-height: 17px;
+  }
+  .help-link {
+  background: #dd4b39;
+  padding: 0 5px;
+  color: #fff;
+  font-weight: bold;
+  display: inline-block;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  border-radius: 1em;
+  text-decoration: none;
+  position: relative;
+  top: 0px;
+  }
+  .help-link:visited {
+  color: #fff;
+  }
+  .help-link:hover {
+  color: #fff;
+  background: #c03523;
+  text-decoration: none;
+  }
+  .help-link:active {
+  opacity: 1;
+  background: #ae2817;
+  }
+  .wrapper {
+  position: relative;
+  min-height: 100%;
+  }
+  .content {
+  padding: 0 44px;
+  }
+  .main {
+  padding-bottom: 100px;
+  }
+  /* For modern browsers */
+  .clearfix:before,
+  .clearfix:after {
+  content: "";
+  display: table;
+  }
+  .clearfix:after {
+  clear: both;
+  }
+  /* For IE 6/7 (trigger hasLayout) */
+  .clearfix {
+  zoom:1;
+  }
+  .google-header-bar {
+  height: 71px;
+  border-bottom: 1px solid #e5e5e5;
+  overflow: hidden;
+  }
+  .header .logo {
+  background-image: url(https://ssl.gstatic.com/accounts/ui/logo_1x.png);
+  background-size: 116px 38px;
+  background-repeat: no-repeat;
+  margin: 17px 0 0;
+  float: left;
+  height: 38px;
+  width: 116px;
+  }
+  .header .logo-w {
+  background-image: url(https://ssl.gstatic.com/images/branding/googlelogo/1x/googlelogo_color_112x36dp.png);
+  background-size: 112px 36px;
+  margin: 21px 0 0;
+  }
+  .header .secondary-link {
+  margin: 28px 0 0;
+  float: right;
+  }
+  .header .secondary-link a {
+  font-weight: normal;
+  }
+  .google-header-bar.centered {
+  border: 0;
+  height: 108px;
+  }
+  .google-header-bar.centered .header .logo {
+  float: none;
+  margin: 40px auto 30px;
+  display: block;
+  }
+  .google-header-bar.centered .header .secondary-link {
+  display: none
+  }
+  .google-footer-bar {
+  position: absolute;
+  bottom: 0;
+  height: 35px;
+  width: 100%;
+  border-top: 1px solid #e5e5e5;
+  overflow: hidden;
+  }
+  .footer {
+  padding-top: 7px;
+  font-size: .85em;
+  white-space: nowrap;
+  line-height: 0;
+  }
+  .footer ul {
+  float: left;
+  max-width: 80%;
+  min-height: 16px;
+  padding: 0;
+  }
+  .footer ul li {
+  color: #737373;
+  display: inline;
+  padding: 0;
+  padding-right: 1.5em;
+  }
+  .footer a {
+  color: #737373;
+  }
+  .lang-chooser-wrap {
+  float: right;
+  display: inline;
+  }
+  .lang-chooser-wrap img {
+  vertical-align: top;
+  }
+  .lang-chooser {
+  font-size: 13px;
+  height: 24px;
+  line-height: 24px;
+  }
+  .lang-chooser option {
+  font-size: 13px;
+  line-height: 24px;
+  }
+  .hidden {
+  height: 0px;
+  width: 0px;
+  overflow: hidden;
+  visibility: hidden;
+  display: none !important;
+  }
+  .banner {
+  text-align: center;
+  }
+  .card {
+  background-color: #f7f7f7;
+  padding: 20px 25px 30px;
+  margin: 0 auto 25px;
+  width: 304px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  }
+  .card > *:first-child {
+  margin-top: 0;
+  }
+  .rc-button,
+  .rc-button:visited {
+  display: inline-block;
+  min-width: 46px;
+  text-align: center;
+  color: #444;
+  font-size: 14px;
+  font-weight: 700;
+  height: 36px;
+  padding: 0 8px;
+  line-height: 36px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -o-transition: all 0.218s;
+  -moz-transition: all 0.218s;
+  -webkit-transition: all 0.218s;
+  transition: all 0.218s;
+  border: 1px solid #dcdcdc;
+  background-color: #f5f5f5;
+  background-image: -webkit-linear-gradient(top,#f5f5f5,#f1f1f1);
+  background-image: -moz-linear-gradient(top,#f5f5f5,#f1f1f1);
+  background-image: -ms-linear-gradient(top,#f5f5f5,#f1f1f1);
+  background-image: -o-linear-gradient(top,#f5f5f5,#f1f1f1);
+  background-image: linear-gradient(top,#f5f5f5,#f1f1f1);
+  -o-transition: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+  }
+  .card .rc-button {
+  width: 100%;
+  padding: 0;
+  }
+  .rc-button.disabled,
+  .rc-button[disabled] {
+  opacity: .5;
+  filter: alpha(opacity=50);
+  cursor: default;
+  pointer-events: none;
+  }
+  .rc-button:hover {
+  border: 1px solid #c6c6c6;
+  color: #333;
+  text-decoration: none;
+  -o-transition: all 0.0s;
+  -moz-transition: all 0.0s;
+  -webkit-transition: all 0.0s;
+  transition: all 0.0s;
+  background-color: #f8f8f8;
+  background-image: -webkit-linear-gradient(top,#f8f8f8,#f1f1f1);
+  background-image: -moz-linear-gradient(top,#f8f8f8,#f1f1f1);
+  background-image: -ms-linear-gradient(top,#f8f8f8,#f1f1f1);
+  background-image: -o-linear-gradient(top,#f8f8f8,#f1f1f1);
+  background-image: linear-gradient(top,#f8f8f8,#f1f1f1);
+  -moz-box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  }
+  .rc-button:active {
+  background-color: #f6f6f6;
+  background-image: -webkit-linear-gradient(top,#f6f6f6,#f1f1f1);
+  background-image: -moz-linear-gradient(top,#f6f6f6,#f1f1f1);
+  background-image: -ms-linear-gradient(top,#f6f6f6,#f1f1f1);
+  background-image: -o-linear-gradient(top,#f6f6f6,#f1f1f1);
+  background-image: linear-gradient(top,#f6f6f6,#f1f1f1);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  .rc-button-submit,
+  .rc-button-submit:visited {
+  border: 1px solid #3079ed;
+  color: #fff;
+  text-shadow: 0 1px rgba(0,0,0,0.1);
+  background-color: #4d90fe;
+  background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed);
+  background-image: -moz-linear-gradient(top,#4d90fe,#4787ed);
+  background-image: -ms-linear-gradient(top,#4d90fe,#4787ed);
+  background-image: -o-linear-gradient(top,#4d90fe,#4787ed);
+  background-image: linear-gradient(top,#4d90fe,#4787ed);
+  }
+  .rc-button-submit:hover {
+  border: 1px solid #2f5bb7;
+  color: #fff;
+  text-shadow: 0 1px rgba(0,0,0,0.3);
+  background-color: #357ae8;
+  background-image: -webkit-linear-gradient(top,#4d90fe,#357ae8);
+  background-image: -moz-linear-gradient(top,#4d90fe,#357ae8);
+  background-image: -ms-linear-gradient(top,#4d90fe,#357ae8);
+  background-image: -o-linear-gradient(top,#4d90fe,#357ae8);
+  background-image: linear-gradient(top,#4d90fe,#357ae8);
+  }
+  .rc-button-submit:active {
+  background-color: #357ae8;
+  background-image: -webkit-linear-gradient(top,#4d90fe,#357ae8);
+  background-image: -moz-linear-gradient(top,#4d90fe,#357ae8);
+  background-image: -ms-linear-gradient(top,#4d90fe,#357ae8);
+  background-image: -o-linear-gradient(top,#4d90fe,#357ae8);
+  background-image: linear-gradient(top,#4d90fe,#357ae8);
+  -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .rc-button-red,
+  .rc-button-red:visited {
+  border: 1px solid transparent;
+  color: #fff;
+  text-shadow: 0 1px rgba(0,0,0,0.1);
+  background-color: #d14836;
+  background-image: -webkit-linear-gradient(top,#dd4b39,#d14836);
+  background-image: -moz-linear-gradient(top,#dd4b39,#d14836);
+  background-image: -ms-linear-gradient(top,#dd4b39,#d14836);
+  background-image: -o-linear-gradient(top,#dd4b39,#d14836);
+  background-image: linear-gradient(top,#dd4b39,#d14836);
+  }
+  .rc-button-red:hover {
+  border: 1px solid #b0281a;
+  color: #fff;
+  text-shadow: 0 1px rgba(0,0,0,0.3);
+  background-color: #c53727;
+  background-image: -webkit-linear-gradient(top,#dd4b39,#c53727);
+  background-image: -moz-linear-gradient(top,#dd4b39,#c53727);
+  background-image: -ms-linear-gradient(top,#dd4b39,#c53727);
+  background-image: -o-linear-gradient(top,#dd4b39,#c53727);
+  background-image: linear-gradient(top,#dd4b39,#c53727);
+  }
+  .rc-button-red:active {
+  border: 1px solid #992a1b;
+  background-color: #b0281a;
+  background-image: -webkit-linear-gradient(top,#dd4b39,#b0281a);
+  background-image: -moz-linear-gradient(top,#dd4b39,#b0281a);
+  background-image: -ms-linear-gradient(top,#dd4b39,#b0281a);
+  background-image: -o-linear-gradient(top,#dd4b39,#b0281a);
+  background-image: linear-gradient(top,#dd4b39,#b0281a);
+  -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .secondary-actions {
+  text-align: center;
+  }
+</style>
+<style media="">
+  .google-header-bar.centered {
+  height: 83px;
+  }
+  .google-header-bar.centered .header .logo {
+  margin: 25px auto 20px;
+  }
+  .card {
+  margin-bottom: 20px;
+  }
+</style>
+<style media="">
+  html, body {
+  font-size: 14px;
+  }
+  .google-header-bar.centered {
+  height: 73px;
+  }
+  .google-header-bar.centered .header .logo {
+  margin: 20px auto 15px;
+  }
+  .content {
+  padding-left: 10px;
+  padding-right: 10px;
+  }
+  .hidden-small {
+  display: none;
+  }
+  .card {
+  padding: 20px 15px 30px;
+  width: 270px;
+  }
+  .footer ul li {
+  padding-right: 1em;
+  }
+  .lang-chooser-wrap {
+  display: none;
+  }
+</style>
+<style media="screen and (-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3 / 2), (min-device-pixel-ratio: 1.5)">
+  .header .logo {
+  background-image: url(https://ssl.gstatic.com/accounts/ui/logo_2x.png);
+  }
+  .header .logo-w {
+  background-image: url(https://ssl.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_112x36dp.png);
+  }
+</style>
+<style>
+  pre.debug {
+  font-family: monospace;
+  position: absolute;
+  left: 0;
+  margin: 0;
+  padding: 1.5em;
+  font-size: 13px;
+  background: #f1f1f1;
+  border-top: 1px solid #e5e5e5;
+  direction: ltr;
+  white-space: pre-wrap;
+  width: 90%;
+  overflow: hidden;
+  }
+</style>
+<style>
+  .banner h1 {
+  font-family: 'Open Sans', arial;
+  -webkit-font-smoothing: antialiased;
+  color: #555;
+  font-size: 42px;
+  font-weight: 300;
+  margin-top: 0;
+  margin-bottom: 20px;
+  }
+  .banner h2 {
+  font-family: 'Open Sans', arial;
+  -webkit-font-smoothing: antialiased;
+  color: #555;
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 20px;
+  }
+  .signin-card {
+  width: 274px;
+  padding: 40px 40px;
+  }
+  .signin-card .profile-img {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 10px;
+  display: block;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  }
+  .signin-card .profile-name {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0 0;
+  min-height: 1em;
+  }
+  .signin-card .profile-email {
+  font-size: 16px;
+  text-align: center;
+  margin: 10px 0 20px 0;
+  min-height: 1em;
+  }
+  .signin-card input[type=email],
+  .signin-card input[type=password],
+  .signin-card input[type=text],
+  .signin-card input[type=submit] {
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+  z-index: 1;
+  position: relative;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  }
+  .signin-card #Email,
+  .signin-card #Passwd,
+  .signin-card .captcha {
+  direction: ltr;
+  height: 44px;
+  font-size: 16px;
+  }
+  .signin-card #Email + .stacked-label {
+  margin-top: 15px;
+  }
+  .signin-card #reauthEmail {
+  display: block;
+  margin-bottom: 10px;
+  line-height: 36px;
+  padding: 0 8px;
+  font-size: 15px;
+  color: #404040;
+  line-height: 2;
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  }
+  .one-google p {
+  margin: 0 0 10px;
+  color: #555;
+  font-size: 14px;
+  text-align: center;
+  }
+  .one-google p.create-account,
+  .one-google p.switch-account {
+  margin-bottom: 60px;
+  }
+  .one-google .logo-strip {
+  background-repeat: no-repeat;
+  display: block;
+  margin: 10px auto;
+  background-image: url(https://ssl.gstatic.com/accounts/ui/wlogostrip_230x17_1x.png);
+  background-size: 230px 17px;
+  width: 230px;
+  height: 17px;
+  }
+</style>
+<style media="">
+  .banner h1 {
+  font-size: 38px;
+  margin-bottom: 15px;
+  }
+  .banner h2 {
+  margin-bottom: 15px;
+  }
+  .one-google p.create-account,
+  .one-google p.switch-account {
+  margin-bottom: 30px;
+  }
+  .signin-card #Email {
+  margin-bottom: 0;
+  }
+  .signin-card #Passwd {
+  margin-top: -1px;
+  }
+  .signin-card #Email.form-error,
+  .signin-card #Passwd.form-error {
+  z-index: 2;
+  }
+  .signin-card #Email:hover,
+  .signin-card #Email:focus,
+  .signin-card #Passwd:hover,
+  .signin-card #Passwd:focus {
+  z-index: 3;
+  }
+</style>
+<style media="">
+  .banner h1 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  }
+  .signin-card {
+  width: 260px;
+  padding: 20px 20px;
+  margin: 0 auto 20px;
+  }
+  .signin-card .profile-img {
+  width: 72px;
+  height: 72px;
+  -moz-border-radius: 72px;
+  -webkit-border-radius: 72px;
+  border-radius: 72px;
+  }
+</style>
+<style media="screen and (-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3 / 2), (min-device-pixel-ratio: 1.5)">
+  .one-google .logo-strip {
+  background-image: url(https://ssl.gstatic.com/accounts/ui/wlogostrip_230x17_2x.png);
+  }
+</style>
+<style>
+  .remember .bubble-wrap {
+  position: absolute;
+  padding-top: 3px;
+  -o-transition: opacity .218s ease-in .218s;
+  -moz-transition: opacity .218s ease-in .218s;
+  -webkit-transition: opacity .218s ease-in .218s;
+  transition: opacity .218s ease-in .218s;
+  left: -999em;
+  opacity: 0;
+  width: 314px;
+  margin-left: -20px;
+  }
+  .remember:hover .bubble-wrap,
+  .remember input:focus ~ .bubble-wrap,
+  .remember .bubble-wrap:hover,
+  .remember .bubble-wrap:focus {
+  opacity: 1;
+  left: inherit;
+  }
+  .bubble-pointer {
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #fff;
+  width: 0;
+  height: 0;
+  margin-left: 17px;
+  }
+  .bubble {
+  background-color: #fff;
+  padding: 15px;
+  margin-top: -1px;
+  font-size: 11px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  }
+  #stay-signed-in {
+  float: left;
+  }
+  #stay-signed-in-tooltip {
+  left: auto;
+  margin-left: -20px;
+  padding-top: 3px;
+  position: absolute;
+  top: 0;
+  visibility: hidden;
+  width: 314px;
+  z-index: 1;
+  }
+  .dasher-tooltip {
+  top: 380px;
+  }
+</style>
+<style media="">
+  .dasher-tooltip {
+  top: 340px;
+  }
+</style>
+<style>
+  .jfk-tooltip {
+  background-color: #fff;
+  border: 1px solid;
+  color: #737373;
+  font-size: 12px;
+  position: absolute;
+  z-index: 800 !important;
+  border-color: #bbb #bbb #a8a8a8;
+  padding: 16px;
+  width: 250px;
+  }
+ .jfk-tooltip h3 {
+  color: #555;
+  font-size: 12px;
+  margin: 0 0 .5em;
+  }
+ .jfk-tooltip-content p:last-child {
+  margin-bottom: 0;
+  }
+  .jfk-tooltip-arrow {
+  position: absolute;
+  }
+  .jfk-tooltip-arrow .jfk-tooltip-arrowimplbefore,
+  .jfk-tooltip-arrow .jfk-tooltip-arrowimplafter {
+  display: block;
+  height: 0;
+  position: absolute;
+  width: 0;
+  }
+  .jfk-tooltip-arrow .jfk-tooltip-arrowimplbefore {
+  border: 9px solid;
+  }
+  .jfk-tooltip-arrow .jfk-tooltip-arrowimplafter {
+  border: 8px solid;
+  }
+  .jfk-tooltip-arrowdown {
+  bottom: 0;
+  }
+  .jfk-tooltip-arrowup {
+  top: -9px;
+  }
+  .jfk-tooltip-arrowleft {
+  left: -9px;
+  top: 30px;
+  }
+  .jfk-tooltip-arrowright {
+  right: 0;
+  top: 30px;
+  }
+  .jfk-tooltip-arrowdown .jfk-tooltip-arrowimplbefore,.jfk-tooltip-arrowup .jfk-tooltip-arrowimplbefore {
+  border-color: #bbb transparent;
+  left: -9px;
+  }
+  .jfk-tooltip-arrowdown .jfk-tooltip-arrowimplbefore {
+  border-color: #a8a8a8 transparent;
+  }
+  .jfk-tooltip-arrowdown .jfk-tooltip-arrowimplafter,.jfk-tooltip-arrowup .jfk-tooltip-arrowimplafter {
+  border-color: #fff transparent;
+  left: -8px;
+  }
+  .jfk-tooltip-arrowdown .jfk-tooltip-arrowimplbefore {
+  border-bottom-width: 0;
+  }
+  .jfk-tooltip-arrowdown .jfk-tooltip-arrowimplafter {
+  border-bottom-width: 0;
+  }
+  .jfk-tooltip-arrowup .jfk-tooltip-arrowimplbefore {
+  border-top-width: 0;
+  }
+  .jfk-tooltip-arrowup .jfk-tooltip-arrowimplafter {
+  border-top-width: 0;
+  top: 1px;
+  }
+  .jfk-tooltip-arrowleft .jfk-tooltip-arrowimplbefore,
+  .jfk-tooltip-arrowright .jfk-tooltip-arrowimplbefore {
+  border-color: transparent #bbb;
+  top: -9px;
+  }
+  .jfk-tooltip-arrowleft .jfk-tooltip-arrowimplafter,
+  .jfk-tooltip-arrowright .jfk-tooltip-arrowimplafter {
+  border-color:transparent #fff;
+  top:-8px;
+  }
+  .jfk-tooltip-arrowleft .jfk-tooltip-arrowimplbefore {
+  border-left-width: 0;
+  }
+  .jfk-tooltip-arrowleft .jfk-tooltip-arrowimplafter {
+  border-left-width: 0;
+  left: 1px;
+  }
+  .jfk-tooltip-arrowright .jfk-tooltip-arrowimplbefore {
+  border-right-width: 0;
+  }
+  .jfk-tooltip-arrowright .jfk-tooltip-arrowimplafter {
+  border-right-width: 0;
+  }
+  .jfk-tooltip-closebtn {
+  background: url("//ssl.gstatic.com/ui/v1/icons/common/x_8px.png") no-repeat;
+  border: 1px solid transparent;
+  height: 21px;
+  opacity: .4;
+  outline: 0;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  width: 21px;
+  }
+  .jfk-tooltip-closebtn:focus,
+  .jfk-tooltip-closebtn:hover {
+  opacity: .8;
+  cursor: pointer;
+  }
+  .jfk-tooltip-closebtn:focus {
+  border-color: #4d90fe;
+  }
+</style>
+<style media="">
+  .jfk-tooltip {
+  display: none;
+  }
+</style>
+<style type="text/css">
+.captcha-box {
+  background: #fff;
+  margin: 0 0 10px;
+  overflow: hidden;
+  padding: 10px;
+}
+.captcha-box .captcha-img {
+  text-align: center;
+}
+.captcha-box .captcha-label {
+  font-weight: bold;
+  display: block;
+  margin: .5em 0;
+}
+.captcha-box .captcha-msg {
+  color: #999;
+  display: block;
+  position: relative;
+}
+.captcha-box .captcha-msg .accessibility-logo {
+  float: right;
+  border: 0;
+}
+.captcha-box .audio-box {
+  position: absolute;
+  top: 0;
+}
+</style>
+<style>
+.chromiumsync-custom-content {
+  padding-top: 20px;
+  margin-bottom: 0;
+}
+.form-panel {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+  width: 100%;
+}
+.form-panel.first {
+  z-index: 2;
+}
+.form-panel.second {
+  z-index: 1;
+}
+.shift-form .form-panel.first {
+  z-index: 1;
+}
+.shift-form .form-panel.second {
+  z-index: 2;
+}
+.slide-in,
+.slide-out {
+  display: block;
+  -webkit-transition-property: -webkit-transform, opacity;
+  -moz-transition-property: -moz-transform, opacity;
+  -ms-transition-property: -ms-transform, opacity;
+  -o-transition-property: -o-transform, opacity;
+  transition-property: transform, opacity;
+  -webkit-transition-duration: 0.1s;
+  -moz-transition-duration: 0.1s;
+  -ms-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  -moz-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  -ms-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  -o-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-out {
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+.shift-form .slide-out {
+  opacity: 0;
+  -webkit-transform: translate3d(-120%, 0, 0);
+  -moz-transform: translate3d(-120%, 0, 0);
+  -ms-transform: translate3d(-120%, 0, 0);
+  -o-transform: translate3d(-120%, 0, 0);
+  transform: translate3d(-120%, 0, 0);
+}
+.slide-in {
+  -webkit-transform: translate3d(120%, 0, 0);
+  -moz-transform: translate3d(120%, 0, 0);
+  -ms-transform: translate3d(120%, 0, 0);
+  -o-transform: translate3d(120%, 0, 0);
+  transform: translate3d(120%, 0, 0);
+}
+.shift-form .slide-in {
+  opacity: 1;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+.error-msg {
+  -webkit-transition: max-height 0.3s, opacity 0.3s 0s steps(10, end);
+  -moz-transition: max-height 0.3s, opacity 0.3s 0s steps(10, end);
+  -ms-transition: max-height 0.3s, opacity 0.3s 0s steps(10, end);
+  -o-transition: max-height 0.3s, opacity 0.3s 0s steps(10, end);
+  transition: max-height 0.3s, opacity 0.3s 0s steps(10, end);
+  height: auto;
+  max-height: 0;
+  opacity: 0;
+}
+.has-error .error-msg {
+  max-height: 3.5em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  opacity: 1;
+  visibility: visible;
+}
+.back-arrow {
+  position: absolute;
+  top: 37px;
+  width: 24px;
+  height: 24px;
+  display: none;
+  cursor: pointer;
+}
+.back-arrow {
+  border-style: none;
+}
+.shift-form.back-arrow {
+  display: block;
+}
+.back-arrow img {
+  display: block;
+}
+#link-signup {
+  text-align: center;
+  font-size: 14px;
+}
+.shift-form #link-signup{
+  display: none;
+}
+#link-signin-different {
+  display: none;
+  text-align: center;
+  font-size: 14px;
+}
+.shift-form #link-signin-different {
+  display: block;
+}
+.signin-card #profile-name {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+  min-height: 1em;
+}
+.signin-card.no-name #profile-name {
+  display: none;
+}
+.signin-card.no-name #email-display {
+  line-height: initial;
+  margin-bottom: 16px;
+}
+.signin-card #email-display {
+  display: block;
+  padding: 0px 8px;
+  color: rgb(64, 64, 64);
+  line-height: 2;
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.signin-card #Email {
+  margin-top: 16px;
+}
+.need-help {
+  float: right;
+  text-align: right;
+}
+.form-panel {
+  width: 274px;
+}
+#gaia_firstform {
+  z-index: 2;
+}
+.signin-card {
+  position: relative;
+  overflow: hidden;
+}
+.signin-card #profile-name {
+  color: #000;
+}
+.circle-mask {
+  display: block;
+  height: 96px;
+  width: 96px;
+  overflow: hidden;
+  border-radius: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 100;
+  margin-bottom: 10px;
+}
+.circle {
+  -webkit-transition-property: -webkit-transform;
+  -moz-transition-property: -moz-transform;
+  -ms-transition-property: -ms-transform;
+  -o-transition-property: -o-transform;
+  transition-property: transform;
+  -webkit-transition-timing-function: cubic-bezier(.645,.045,.355,1);
+  -moz-transition-timing-function: cubic-bezier(.645,.045,.355,1);
+  -ms-transition-timing-function: cubic-bezier(.645,.045,.355,1);
+  -o-transition-timing-function: cubic-bezier(.645,.045,.355,1);
+  transition-timing-function: cubic-bezier(.645,.045,.355,1);
+}
+.circle {
+  position: absolute;
+  z-index: 101;
+  height: 96px;
+  width: 96px;
+  border-radius: 50%;
+  opacity: 0.99;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.main {
+  overflow: hidden;
+}
+.card-mask-wrap {
+  position: relative;
+  width: 360px;
+  margin: 0 auto;
+  z-index: 1;
+}
+.dasher-tooltip {
+  position: absolute;
+  left: 50%;
+  margin-left: 150px;
+}
+.dasher-tooltip .tooltip-pointer {
+  margin-top: 15px;
+}
+.dasher-tooltip p {
+  margin-top: 0;
+}
+.dasher-tooltip p span {
+  display: block;
+}
+.card {
+  margin-bottom: 0;
+}
+.one-google {
+  padding-top: 27px;
+}
+#canvas {
+  -webkit-transition: opacity 0.075s;
+  -moz-transition: opacity 0.075s;
+  -ms-transition: opacity 0.075s;
+  -o-transition: opacity 0.075s;
+  transition: opacity 0.075s;
+  opacity: 0.01;
+}
+.shift-form #canvas {
+  opacity: 0.99;
+}
+.label {
+  color: #404040;
+}
+#account-chooser-link {
+  -webkit-transition: opacity 0.3s;
+  -moz-transition: opacity 0.3s;
+  -ms-transition: opacity 0.3s;
+  -o-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+.input-wrapper {
+  position: relative;
+}
+.google-footer-bar {
+  z-index: 2;
+}
+</style>
+<style media="">
+.back-arrow {
+  top: 17px;
+}
+.circle-mask {
+  height: 72px;
+  width: 72px;
+  background-size: 72px;
+}
+.circle {
+  height: 72px;
+  width: 72px;
+}
+#canvas {
+  height: 72px;
+  width: 72px;
+}
+.form-panel {
+  width: 256px;
+}
+.card-mask-wrap {
+  width: 300px;
+}
+.signin-card {
+  width: 256px;
+}
+.signin-card #EmailFirst {
+  margin-top: 15px;
+}
+.one-google {
+  padding-top: 22px;
+}
+</style>
+  </head>
+  <body>
+  <div class="wrapper">
+  <div class="google-header-bar  centered">
+  <div class="header content clearfix">
+  <div class="logo logo-w" aria-label="Google"></div>
+  </div>
+  </div>
+  <div class="main content clearfix">
+<div class="banner">
+  <h2>
+  Sign in with your Google Account
+  </h2>
+</div>
+<div class="main-content 
+  
+  
+    no-name
+  
+  
+  
+">
+<div class="card signin-card
+  
+    pre-shift
+  
+  
+  
+   no-name">
+  <img class="circle-mask"
+      
+        
+          src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png"
+        
+      >
+  <form novalidate method="post" action="https://accounts.google.com/signin/v1/lookup" id="gaia_loginform">
+  <input name="Page" type="hidden" value="PasswordSeparationSignIn">
+  <input type="hidden" name="" value="">
+  <input type="hidden" name="gxf" value="AFoagUVwsrQTZTMz89R7DGBAo1_qsqEaMg:1521259807448">
+  <input type="hidden" name="continue" value="https://accounts.google.com/o/oauth2/v2/auth?response_type=code&amp;login_hint=rsumner31@gmail.com&amp;code_challenge=xUP7If3CB_dQZvxDmS2kmECohJa_ZTzUMFCicwk3b9M&amp;code_challenge_method=S256&amp;redirect_uri=com.googleusercontent.apps.681834923750-3p9205dgnfbq0s196910u38tmn61ehc2:/oauthredirect&amp;client_id=681834923750-3p9205dgnfbq0s196910u38tmn61ehc2.apps.googleusercontent.com&amp;state=wxioX9a96Ikr-I4rPU8ktBef70ET_HjqKQgqs447Mfc&amp;access_type=offline&amp;display=page&amp;scope=https://mail.google.com+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile&amp;from_login=1&amp;as=W0jT8bOMmHgQMWuLCAc7Jw">
+  <input type="hidden" name="followup" value="https://accounts.google.com/o/oauth2/v2/auth?response_type=code&amp;login_hint=rsumner31@gmail.com&amp;code_challenge=xUP7If3CB_dQZvxDmS2kmECohJa_ZTzUMFCicwk3b9M&amp;code_challenge_method=S256&amp;redirect_uri=com.googleusercontent.apps.681834923750-3p9205dgnfbq0s196910u38tmn61ehc2:/oauthredirect&amp;client_id=681834923750-3p9205dgnfbq0s196910u38tmn61ehc2.apps.googleusercontent.com&amp;state=wxioX9a96Ikr-I4rPU8ktBef70ET_HjqKQgqs447Mfc&amp;access_type=offline&amp;display=page&amp;scope=https://mail.google.com+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile&amp;from_login=1&amp;as=W0jT8bOMmHgQMWuLCAc7Jw">
+  <input type="hidden" name="ltmpl" value="embedded">
+  <input type="hidden" name="scc" value="1">
+  <input type="hidden" name="sarp" value="1">
+  <input type="hidden" name="oauth" value="1">
+  <input id="profile-information" name="ProfileInformation" type="hidden" value="">
+  <input id="session-state" name="SessionState" type="hidden" value="AEThLly27LPIvs7UAOnEhLGguC2Di_uIOypkO7p5I-CFxR8nwF5BQX8cg12jFTX1ptLCDGaA1MEr64l46IzvI05Denr0bnV_ppV7Ul9k0aqI9Er2DE8fNwDtDGuMT9nqCWY_OpxUQemvaMHHjo-wPBNE1XAUqHY8_fLV3xf7KkLFRrr1bRr3VlI">
+  <input type="hidden" id="_utf8" name="_utf8" value="&#9731;"/>
+  <input type="hidden" name="bgresponse" id="bgresponse" value="js_disabled">
+  <div class="form-panel first valid" id="gaia_firstform">
+  <div class="slide-out ">
+  <div class="input-wrapper focused">
+  <div id="identifier-shown">
+  <div>
+  <label class="hidden-label" for="Email">
+  Enter your email</label>
+  <input id="Email" type="email" value="" spellcheck="false"
+                   name="Email"
+                   
+                     placeholder="Email or phone"
+                   
+                   
+                   
+                   autofocus>
+  <input id="Passwd-hidden" type="password" spellcheck="false" class="hidden">
+  </div>
+  </div>
+  <span role="alert" class="error-msg" id="errormsg_0_Email"></span>
+  </div>
+<input id="next" name="signIn" class="rc-button rc-button-submit" type="submit" value="Next">
+  <a class="need-help"
+        href="https://accounts.google.com/signin/usernamerecovery?continue=https%3A%2F%2Faccounts.google.com%2Fo%2Foauth2%2Fv2%2Fauth%3Fresponse_type%3Dcode%26login_hint%3Drsumner31%40gmail.com%26code_challenge%3DxUP7If3CB_dQZvxDmS2kmECohJa_ZTzUMFCicwk3b9M%26code_challenge_method%3DS256%26redirect_uri%3Dcom.googleusercontent.apps.681834923750-3p9205dgnfbq0s196910u38tmn61ehc2%3A%2Foauthredirect%26client_id%3D681834923750-3p9205dgnfbq0s196910u38tmn61ehc2.apps.googleusercontent.com%26state%3DwxioX9a96Ikr-I4rPU8ktBef70ET_HjqKQgqs447Mfc%26access_type%3Doffline%26display%3Dpage%26scope%3Dhttps%3A%2F%2Fmail.google.com%2Bhttps%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%2Bhttps%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%26from_login%3D1%26as%3DW0jT8bOMmHgQMWuLCAc7Jw&amp;sarp=1&amp;scc=1&amp;hl=en">
+  Find my account
+  </a>
+  </div>
+  </div>
+  </form>
+</div>
+  <div class="card-mask-wrap
+    
+        
+     no-name">
+  <div class="card-mask">
+  <div class="one-google">
+  <p class="create-account">
+  <span id="link-signin-different">
+  <a href="https://accounts.google.com/AccountChooser?continue=https%3A%2F%2Faccounts.google.com%2Fo%2Foauth2%2Fv2%2Fauth%3Fresponse_type%3Dcode%26login_hint%3Drsumner31%40gmail.com%26code_challenge%3DxUP7If3CB_dQZvxDmS2kmECohJa_ZTzUMFCicwk3b9M%26code_challenge_method%3DS256%26redirect_uri%3Dcom.googleusercontent.apps.681834923750-3p9205dgnfbq0s196910u38tmn61ehc2%3A%2Foauthredirect%26client_id%3D681834923750-3p9205dgnfbq0s196910u38tmn61ehc2.apps.googleusercontent.com%26state%3DwxioX9a96Ikr-I4rPU8ktBef70ET_HjqKQgqs447Mfc%26access_type%3Doffline%26display%3Dpage%26scope%3Dhttps%3A%2F%2Fmail.google.com%2Bhttps%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%2Bhttps%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%26from_login%3D1%26as%3DW0jT8bOMmHgQMWuLCAc7Jw&amp;followup=https%3A%2F%2Faccounts.google.com%2Fo%2Foauth2%2Fv2%2Fauth%3Fresponse_type%3Dcode%26login_hint%3Drsumner31%40gmail.com%26code_challenge%3DxUP7If3CB_dQZvxDmS2kmECohJa_ZTzUMFCicwk3b9M%26code_challenge_method%3DS256%26redirect_uri%3Dcom.googleusercontent.apps.681834923750-3p9205dgnfbq0s196910u38tmn61ehc2%3A%2Foauthredirect%26client_id%3D681834923750-3p9205dgnfbq0s196910u38tmn61ehc2.apps.googleusercontent.com%26state%3DwxioX9a96Ikr-I4rPU8ktBef70ET_HjqKQgqs447Mfc%26access_type%3Doffline%26display%3Dpage%26scope%3Dhttps%3A%2F%2Fmail.google.com%2Bhttps%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%2Bhttps%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%26from_login%3D1%26as%3DW0jT8bOMmHgQMWuLCAc7Jw&amp;ltmpl=embedded&amp;scc=1&amp;sarp=1&amp;oauth=1">
+  Sign in with a different account
+  </a>
+  </span>
+  <span id="link-signup">
+  <a href="https://accounts.google.com/SignUp?continue=https%3A%2F%2Faccounts.google.com%2Fo%2Foauth2%2Fv2%2Fauth%3Fresponse_type%3Dcode%26login_hint%3Drsumner31%40gmail.com%26code_challenge%3DxUP7If3CB_dQZvxDmS2kmECohJa_ZTzUMFCicwk3b9M%26code_challenge_method%3DS256%26redirect_uri%3Dcom.googleusercontent.apps.681834923750-3p9205dgnfbq0s196910u38tmn61ehc2%3A%2Foauthredirect%26client_id%3D681834923750-3p9205dgnfbq0s196910u38tmn61ehc2.apps.googleusercontent.com%26state%3DwxioX9a96Ikr-I4rPU8ktBef70ET_HjqKQgqs447Mfc%26access_type%3Doffline%26display%3Dpage%26scope%3Dhttps%3A%2F%2Fmail.google.com%2Bhttps%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%2Bhttps%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%26from_login%3D1%26as%3DW0jT8bOMmHgQMWuLCAc7Jw&amp;ltmpl=embedded">
+  Create account
+  </a>
+  </span>
+  </p>
+<p class="tagline">
+  One Google Account for everything Google
+</p>
+<div class="logo-strip"></div>
+  </div>
+  </div>
+  </div>
+</div>
+  </div>
+  <div class="google-footer-bar">
+  <div class="footer content clearfix">
+  <ul id="footer-list">
+  <li>
+  Google
+  </li>
+  <li>
+  <a href="https://www.google.com/intl/en/policies/privacy/embedded/">
+  Privacy
+  </a>
+  </li>
+  <li>
+  <a href="https://www.google.com/intl/en/policies/terms/embedded/">
+  Terms
+  </a>
+  </li>
+  </ul>
+  </div>
+</div>
+  </div>
+<script type="text/javascript" nonce="6WimleuC6/mwV8Qn+tjofPokTNI">
+  var gaia_attachEvent = function(element, event, callback) {
+  if (element && element.addEventListener) {
+  element.addEventListener(event, callback, false);
+  } else if (element && element.attachEvent) {
+  element.attachEvent('on' + event, callback);
+  }
+  };
+</script>
+  <script type="text/javascript" nonce="6WimleuC6/mwV8Qn+tjofPokTNI">/* Anti-spam. Want to say hello? Contact (base64) Ym90Z3VhcmQtY29udGFjdEBnb29nbGUuY29t */Function('var J=function(V,C,P,g){for(P=V.G(),g=0;0<C;C--)g=g<<8|V.G();B(V,P,g)},x=function(V,C){try{D(this,V,C)}catch(P){f(this,P)}},u=function(V,C,P,g,v){for(g=(C=[],P=0);g<V.length;g++)v=V.charCodeAt(g),128>v?C[P++]=v:(2048>v?C[P++]=v>>6|192:(55296==(v&64512)&&g+1<V.length&&56320==(V.charCodeAt(g+1)&64512)?(v=65536+((v&1023)<<10)+(V.charCodeAt(++g)&1023),C[P++]=v>>18|240,C[P++]=v>>12&63|128):C[P++]=v>>12|224,C[P++]=v>>6&63|128),C[P++]=v&63|128);return C},L=function(V,C,P,g,v){P=((void 0!=(C=(v=V.j(66),[C,v>>8&255,v&255]),g)&&C.push(g),0==V.j(6).length)&&(V.I[6]=void 0,B(V,6,C)),g="",P&&(P.message&&(g+=P.message),P.stack&&(g+=":"+P.stack)),V).j(215),3<P&&(g=g.slice(0,P-3),P-=g.length+3,g=u(g.replace(/\\r\\n/g,"\\n")),Q(V,172,d(g.length,2).concat(g),12)),B(V,215,P)},m=((x.prototype.$=function(V,C,P,g,v){if((C=V[0],4)==C){V=V[1];try{for(g=C=(V=(P=atob(V),[]),0);g<P.length;g++)v=P.charCodeAt(g),255<v&&(V[C++]=v&255,v>>=8),V[C++]=v;this.U=V}catch(e){L(this,17,e)}O(this)}else if(1==C)P=V[2],v=V[1],P.push(this.j(22).length,this.j(172).length,this.j(142).length,this.j(215)),this.O=v,B(this,226,V[3]),this.I[165]&&h(this,this.j(165));else{if(2==C){if(V=((((v=((C=(v=((v=(V=d((P=V[2],this).j(22).length+2,2),this).j(6),0)<v.length&&Q(this,22,d(v.length,2).concat(v),15),this).j(123)&511,v-=this.j(22).length+5,this.j(172)),4)<C.length&&(v-=C.length+3),0<v&&Q(this,22,d(v,2).concat(c(v)),10),4<C.length&&Q(this,22,d(C.length,2).concat(C),153),c(2).concat(this.j(22))),v)[1]=v[0]^3,v)[3]=v[1]^V[0],v)[4]=v[1]^V[1],window).btoa){for(g=0,C="";g<v.length;g+=8192)C+=String.fromCharCode.apply(null,v.slice(g,g+8192));V=V(C).replace(/\\+/g,"-").replace(/\\//g,"_").replace(/=/g,"")}else V=void 0;if(V)V="!"+V;else for(C=0,V="";C<v.length;C++)g=v[C][this.m](16),1==g.length&&(g="0"+g),V+=g;return((this.j(22).length=P[0],this).j(172).length=P[1],this.j(142).length=P[2],v=V,B)(this,215,P[3]),v}if(3==C)h(this,V[1]);else if(6==C)return h(this,V[1])}},x.prototype).N=36,function(V,C,P,g,v,e){for(v=(g=((C={},P=V.G(),C).P=V.G(),C.g=[],V).G()-1,V.G()),e=0;e<g;e++)C.g.push(V.G());for((C.Y=V.j(P),C).C=V.j(v);g--;)C.g[g]=V.j(C.g[g]);return C}),d=function(V,C,P,g){for(P=(g=C-1,[]);0<=g;g--)P[C-1-g]=V>>8*g&255;return P},Q=function(V,C,P,g,v,e){for(V=(g=(((v=V.j(C),172==C)?(C=function(V,C,P,g){if((P=(C=v.length,C-4)>>3,v.A)!=P){P=((g=[0,0,(v.A=P,0),e],P)<<3)-4;try{v.R=w(M(v,P),M(v,P+4),g)}catch(F){throw F;}}v.push(v.R[C&7]^V)},e=V.j(184)):C=function(V){v.push(V)},g)&&C(g&255),0),P).length;g<V;g++)C(P[g])},f=(((x.prototype.H="caller",x).prototype.Qx=function(V,C,P){if(3==V.length){for(P=0;3>P;P++)C[P]+=V[P];for(V=[(P=0,13),8,13,12,16,5,3,10,15];9>P;P++)C[3](C,P%3,V[P])}},x.prototype).l=function(V,C,P,g){((P=(g=(P=(V&=(C=V&4,3),this).G(),this).G(),this.j(P)),C)&&(P=u((""+P).replace(/\\r\\n/g,"\\n"))),V&&Q(this,g,d(P.length,2)),Q)(this,g,P)},function(V,C){V.a=("E:"+C.message+":"+C.stack).slice(0,2048)}),t=(x.prototype.S=35,false),H=(x.prototype.Zx=function(V,C,P,g){for(;P--;)255!=P&&66!=P&&C.I[P]&&(C.I[P]=C[g](C[V](P),this));C[V]=this},function(V,C,P,g,v,e){return function(){var U=g&1,N=[6,C,P,void 0,v,e,arguments];if(g&2)var l=(E(V,N),A)(V,true,false,false);else U&&V.B.length?E(V,N):U?(E(V,N),A(V,true,false,false)):l=T(V,N);return l}}),D=(x.prototype.G=function(V,C){if(this.Z)return V=V?this.Z().shift():this.D().shift(),this.Z().length||this.D().length||(this.D=this.Z=void 0,this.V--),V;if(!(V=this.j(255),V in this.U))throw L(this,31),this.v;return(void 0==this.W&&(this.W=M(this.U,V-4),this.h=void 0),this.h!=V>>3)&&(this.h=V>>3,C=[0,0,0,this.j(236)],this.F=w(this.W,this.h,C)),B(this,255,V+1),this.U[V]^this.F[V%8]},function(V,C,P,g,v){for(((((V.c=(V.w=!(V.M=(g=[],v=0,false),1),function(V,C,P,g,v,F){return(g=function(){return g[P.S+(v[P.H]===C)-!F[P.H]]},v=function(){return g()},P=this,F=P.$,v[P.m]=function(V){g[P.N]=V},v)[P.m](V),V=v}),V).o=function(V,C,P){return P=function(){return V},C=function(){return P()},C[this.m]=function(e){V=e},C},V).L=0,V.K=25,V).Z=void 0,V.D=void 0,V.V=0,V).i=[];128>v;v++)g[v]=String.fromCharCode(v);((((((((((((((((((v=(((((((((((V.I=[],B)(V,255,0),B(V,66,0),V).B=[],B)(V,159,function(V,C,P){(C=(P=(C=V.G(),V).G(),V.I)[C]&&V.j(C),B)(V,P,C)}),V.O=false,B(V,19,function(V,C,P,g,v,F,k,R,a,S,W,b,Y){for(R=(k=(F=(g=(C=V.G(),P=0),v=function(C,e){for(;g<C;)P|=V.G()<<g,g+=8;return e=P&(g-=C,(1<<C)-1),P>>=C,e},v)(3)+1,v)(5),[]),S=a=0;S<k;S++)W=v(1),R.push(W),a+=W?0:1;for(a=(a-(S=0,1)).toString(2).length,b=[];S<k;S++)R[S]||(b[S]=v(a));for(S=0;S<k;S++)R[S]&&(b[S]=V.G());for(S=F,Y=[];S--;)Y.push(V.j(V.G()));B(V,C,function(V,C,e,P,g){for(C=(e=(V.V++,P=0,[]),[]);P<k;P++){if(g=b[P],!R[P]){for(;g>=C.length;)C.push(V.G());g=C[g]}e.push(g)}V.Z=V.c(Y.slice(),V.G),V.D=V.c(e,V.G)})}),B(V,210,function(V){X(V,4)}),B)(V,133,function(V,C){Z(V,1,5)||(C=m(V),B(V,C.P,C.Y.apply(C.C,C.g)))}),B)(V,94,function(V,C,P,g){(C=V.G(),P=V.G(),g=V.G(),B)(V,g,V.j(C)>>P)}),B)(V,40,function(V){X(V,1)}),B)(V,184,0),B)(V,139,function(V,C,P,g){C=V.G(),P=V.G(),g=V.G(),V.j(C)[V.j(P)]=V.j(g)}),B)(V,201,function(V){J(V,4)}),B(V,153,V),B(V,215,2048),B(V,203,function(V,C,P,g){(g=(C=V.G(),P=V.G(),V).G(),B)(V,g,V.j(C)||V.j(P))}),B(V,81,function(V,C){C=V.j(V.G()),p(V,C)}),B(V,237,function(V,C){(C=V.G(),V=V.j(C),V[0]).removeEventListener(V[1],V[2],false)}),B(V,236,0),B)(V,176,function(V,C,P,g,v){for(g=(v=(P=(C=V.G(),n)(V),0),[]);v<P;v++)g.push(V.G());B(V,C,g)}),B(V,58,function(V,C,P,g){P=(g=(P=(C=V.G(),V.G()),V.G()),V).j(P),C=V.j(C),B(V,g,C[P])}),B(V,54,function(V,C,P){Z(V,1,5)||(C=V.G(),P=V.G(),B(V,P,function(V){return eval(V)}(V.j(C))))}),P.f)||function(){},V).Ga=((window.performance||{}).timing||{}).navigationStart||0,B)(V,33,function(){}),B(V,226,{}),B(V,80,function(V,C,P){P=(C=V.G(),V.G()),0!=V.j(C)&&B(V,255,V.j(P))}),B(V,105,function(V,C,P,g){(P=(C=V.G(),V.G()),g=V.G(),B)(V,g,(V.j(C)in V.j(P))+0)}),B)(V,97,function(V,C,P){C=(C=V.G(),P=V.G(),V).j(C),B(V,P,r(C))}),B)(V,84,339),B)(V,218,function(V,C,P){(C=V.G(),P=V.G(),B)(V,P,V.j(P)+V.j(C))}),B(V,6,[]),B)(V,234,function(V,C,P,g,v){(g=(v=(C=(g=(P=(C=V.G(),V.G()),V.G()),V).j(C),V).j(V.G()),P=V.j(P),V).j(g),0!==C)&&(g=H(V,g,v,1,C,P),C.addEventListener(P,g,t),B(V,70,[C,P,g]))}),B(V,158,function(V,C,P,g,v){P=(C=V.G(),P=V.G(),g=V.j(V.G()),v=V.j(V.G()),V.j(P)),B(V,C,H(V,P,g,v))}),B)(V,232,function(V,C,P,g,v,F,k){Z(V,1,5)||(C=m(V),v=C.Y,g=C.C,P=C.g,k=P.length,0==k?F=new g[v]:1==k?F=new g[v](P[0]):2==k?F=new g[v](P[0],P[1]):3==k?F=new g[v](P[0],P[1],P[2]):4==k?F=new g[v](P[0],P[1],P[2],P[3]):L(V,22),B(V,C.P,F))}),B)(V,107,function(V,C,P,g){if(C=V.J.pop()){for(P=V.G();0<P;P--)g=V.G(),C[g]=V.I[g];C[C[6]=V.I[6],215]=V.I[215],V.I=C}else B(V,255,V.U.length)}),B(V,172,c(4)),B(V,197,function(V,C,P,g,v,F){if(!Z(V,1,255)){if("object"==(V=(g=(C=(v=(g=(C=V.G(),P=V.G(),V.G()),V.G()),V).j(C),P=V.j(P),V.j(g)),V).j(v),r)(C)){for(F in v=[],C)v.push(F);C=v}for(F=(v=0,C.length);v<F;v+=g)P(C.slice(v,v+g),V)}}),V).J=[],B(V,12,function(V){J(V,2)}),B)(V,140,function(V){V.l(4)}),B(V,70,0),B(V,123,0),B(V,239,function(V,C,P,v,y,F,k){if((v=(P=(C=V.G(),n)(V),""),V).I[254])for(y=V.j(254),k=y.length,F=0;P--;)F=(F+n(V))%k,v+=g[y[F]];else for(;P--;)v+=g[V.G()];B(V,C,v)}),B)(V,23,function(V,C,P,g){(C=(C=V.G(),P=V.G(),g=V.G(),V.j(C))==V.j(P),B)(V,g,+C)}),B)(V,108,q),B(V,142,[]),B)(V,166,function(V){J(V,1)}),V).za=function(V,C){((C.push(V[0]<<24|V[1]<<16|V[2]<<8|V[3]),C).push(V[4]<<24|V[5]<<16|V[6]<<8|V[7]),C).push(V[8]<<24|V[9]<<16|V[10]<<8|V[11])},B)(V,240,function(V){V.O&&K(V,0)}),B)(V,22,[165,0,0]),B)(V,18,function(V,C,P){(P=(C=V.G(),V.G()),B)(V,P,""+V.j(C))}),C&&"!"==C.charAt(0))?(V.a=C,v()):(P=!!P.f,V.O=P,V.U=[],E(V,[4,C]),E(V,[5,v]),A(V,false,P,true))}),B=function(V,C,P){if(255==C||66==C)if(V.I[C])V.I[C][V.m](P);else V.I[C]=V.o(P);else if(22!=C&&172!=C&&142!=C&&6!=C||!V.I[C])V.I[C]=V.c(P,V.j);236==C&&(V.W=void 0,B(V,255,V.j(255)+4))},w=(x.prototype.X=function(V,C,P,g,v,e){if(this.a)return this.a;try{v=[],e=[],g=!!V,E(this,[1,g,v,C]),E(this,[2,V,v,e]),A(this,false,g,true),P=e[0]}catch(U){f(this,U),P=this.a,V&&V(P)}return P},function(V,C,P,g){try{for(g=0;79669387488!=g;)V+=(C<<4^C>>>5)+C^g+P[g&3],g+=2489668359,C+=(V<<4^V>>>5)+V^g+P[g>>>11&3];return[V>>>24,V>>16&255,V>>8&255,V&255,C>>>24,C>>16&255,C>>8&255,C&255]}catch(v){throw v;}}),z=function(V){if(V.L){if(!V.w)return false;V.w=false}else if(10>V.b()-V.T)return false;return 0!=document.hidden?false:true},h=function(V,C,P){return((P=V.j(255),V.U&&P<V.U.length)?(B(V,255,V.U.length),p(V,C)):B(V,255,C),O)(V,P)},Z=function(V,C,P){if(0>=V.L||1<V.V||!V.M&&0<C||0!=document.hidden||V.b()-V.T<V.L-P)return false;return!(K((V.w=true,V),C),0)},O=((x.prototype.j=function(V,C){if(C=this.I[V],void 0===C)throw L(this,30,0,V),this.v;return C()},x).prototype.UY=function(V,C,P,g){try{g=V[(C+2)%3],V[C]=V[C]-V[(C+1)%3]-g^(1==C?g<<P:g>>>P)}catch(v){throw v;}},x.prototype.m="toString",function(V,C,P,g,v,e,U){V.V++;try{for(P=(v=void 0,e=0,g=5001,V).U.length;(--g||V.s)&&(V.Z||(e=V.j(255))<P);)try{V.Z?v=V.G(true):(B(V,66,e),U=V.G(),v=V.j(U)),v&&v.call?v(V):L(V,21,0,U),V.M=true,Z(V,0,2)}catch(N){N!=V.v&&(V.j(84)?L(V,22,N):B(V,84,N))}g||L(V,33)}catch(N){try{L(V,22,N)}catch(l){f(V,l)}}return P=V.j(226),C&&B(V,255,C),V.V--,P}),T=function(V,C,P,g,v){if((P=C[0],V).M=false,1==P)V.K=25,V.$(C);else if(2==P){P=C[1],g=C[3];try{V.O=false,v=V.$(C)}catch(e){f(V,e),v=V.a}P&&P(v),g.push(v)}else if(3==P)V.$(C);else if(4==P)V.$(C);else if(5==P)V.O=false,C=C[1],C();else if(6==P)return v=C[2],B(V,51,C[6]),B(V,226,v),V.$(C)},X=function(V,C,P,g){(P=V.G(),g=V.G(),Q)(V,g,d(V.j(P),C))},n=function(V,C){return C=V.G(),C&128&&(C=C&127|V.G()<<7),C},c=function(V,C){for(C=[];V--;)C.push(255*Math.random()|0);return C},E=function(V,C){V.B.splice(0,0,C)},p=(x.prototype.b=(window.performance||{}).now?function(){return this.Ga+(window.performance.now()|0)}:function(){return+new Date},function(V,C){(V.J.push(V.I.slice()),V).I[255]=void 0,B(V,255,C)}),M=function(V,C){return V[C]<<24|V[C+1]<<16|V[C+2]<<8|V[C+3]},r=function(V,C,P){if((C=typeof V,"object")==C)if(V){if(V instanceof Array)return"array";if(V instanceof Object)return C;if((P=Object.prototype.toString.call(V),"[object Window]")==P)return"object";if("[object Array]"==P||"number"==typeof V.length&&"undefined"!=typeof V.splice&&"undefined"!=typeof V.propertyIsEnumerable&&!V.propertyIsEnumerable("splice"))return"array";if("[object Function]"==P||"undefined"!=typeof V.call&&"undefined"!=typeof V.propertyIsEnumerable&&!V.propertyIsEnumerable("call"))return"function"}else return"null";else if("function"==C&&"undefined"==typeof V.call)return"object";return C},I=(x.prototype.IJ=function(V,C,P){return(C=((C^=C<<13,C^=C>>17,C)^C<<5)&P)||(C=1),V^C},function(V,C,P,g,v){for(;V.B.length;){if(P&&C&&z(V)){v=V,V.jy(function(){A(v,false,C,false)});break}g=(P=true,V.B).pop(),g=T(V,g)}return g}),A=function(V,C,P,g,v,e){if(0==V.B.length)return e;if(v=0==V.V)V.T=V.b();return e=I(V,P,g),v&&(P=V.b()-V.T,P<(C?10:0)||0>=V.K--||V.i.push(254>=P?P:254)),e},K=function(V,C){C=V.j(255)-C,B(V,255,V.U.length),V.B.push([3,C])},q=(x.prototype.uZ=(x.prototype.v=(x.prototype.s=false,{}),function(V,C,P,g,v){for(v=g=0;v<V.length;v++)g+=V.charCodeAt(v),g+=g<<10,g^=g>>6;return(g=new (V=(g+=g<<3,g^=g>>11,g)+(g<<15)>>>0,Number)(V&(1<<C)-1),g)[0]=(V>>>C)%P,g}),x.prototype.EY=function(V,C,P,g,v,e){for(e=g=(P=[],0);e<V.length;e++)for(v=v<<C|V[e],g+=C;7<g;)g-=8,P.push(v>>g&255);return P},this),G=((x.prototype.jy=q.requestIdleCallback?function(V){requestIdleCallback(V,{timeout:4})}:q.setImmediate?function(V){setImmediate(V)}:function(V){setTimeout(V,0)},q.botguard)||(q.botguard={}),q).botguard;(G.IKV=function(V,C,P){P=new x(V,{f:C}),this.invoke=function(V,C,e){return(e=P.X(C&&V,e),V)&&!C&&V(e),e}},G).bg=function(V,C,P){return V&&V.substring&&(P=G[V.substring(0,3)])?new P(V.substring(3),C):new G.IKV(V,C)};try{G.u||(window.addEventListener("unload",function(){},t),G.u=1),window.addEventListener("test",null,Object.defineProperty({},"passive",{get:function(){t={passive:true}}}))}catch(V){};')();</script>
+  <script type="text/javascript" nonce="6WimleuC6/mwV8Qn+tjofPokTNI">
+  document.bg = new botguard.bg('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');
+  </script>
+<script nonce="6WimleuC6/mwV8Qn+tjofPokTNI">
+  gaia = window.gaia || {};
+  gaia.ps = gaia.ps || {};
+  gaia.ps.hasPrefilledIdentifier = false;
+  function gaia_parseFragment() {
+  var hash = location.hash;
+  var params = {};
+  if (!hash) {
+  return params;
+  }
+  var paramStrs = decodeURIComponent(hash.substring(1)).split('&');
+  for (var i = 0; i < paramStrs.length; i++) {
+      var param = paramStrs[i].split('=');
+      params[param[0]] = param[1];
+    }
+    return params;
+  }
+
+  function gaia_prefillEmail() {
+    var email = null;
+    var form = null;
+    if (document.getElementById) {
+      email = document.getElementById('Email');
+      form = document.getElementById('gaia_loginform');
+    }
+    if (form && email && (email.value == null || email.value == '')
+        && (email.type != 'hidden')) {
+      hashParams = gaia_parseFragment();
+      if (hashParams['Email'] && hashParams['Email'] != '') {
+        email.value = hashParams['Email'];
+      }
+    }
+  }
+
+  
+  try {
+    gaia_prefillEmail();
+  } catch (e) {
+  }
+  
+</script>
+<script nonce="6WimleuC6/mwV8Qn+tjofPokTNI">
+  var gaia_scrollToElement = function(element) {
+  var calculateOffsetHeight = function(element) {
+  var curtop = 0;
+  if (element.offsetParent) {
+  while (element) {
+  curtop += element.offsetTop;
+  element = element.offsetParent;
+  }
+  }
+  return curtop;
+  }
+  var siginOffsetHeight = calculateOffsetHeight(element);
+  var scrollHeight = siginOffsetHeight - window.innerHeight +
+  element.clientHeight + 0.02 * window.innerHeight;
+  window.scroll(0, scrollHeight);
+  }
+</script>
+  <script nonce="6WimleuC6/mwV8Qn+tjofPokTNI">
+  if (gaia.ps.hasPrefilledIdentifier) {
+  var form = document.getElementById('gaia_loginform');
+  if (form) {
+  form.submit();
+  }
+  }
+  </script>
+<script nonce="6WimleuC6/mwV8Qn+tjofPokTNI">
+  (function(){
+  gaia_onLoginSubmit = function() {
+  try {
+  document.bg.invoke(function(response) {
+  document.getElementById('bgresponse').value = response;
+  });
+  } catch (err) {
+  document.getElementById('bgresponse').value = '';
+  }
+  return true;
+  }
+  document.getElementById('gaia_loginform').onsubmit = gaia_onLoginSubmit;
+  var signinButton;
+  signinButton = document.getElementById('next');
+  gaia_attachEvent(window, 'load', function(){
+  gaia_scrollToElement(signinButton);
+  });
+  })();
+</script>
+  </body>
+</html>

@@ -10,10 +10,37 @@ env:
 
 matrix:
   include:
+master
     - python: 3.4_with_system_site_packages
     - python: 3.5
     - python: 3.6
 
+=======
+    - os: linux
+      language: python
+      dist: trusty
+      sudo: required
+      python: 3.4_with_system_site_packages
+      env:
+        - DISPLAY=:99.0
+        - LIBOVERLAY_SCROLLBAR=0
+    - os: linux
+      language: python
+      dist: trusty
+      sudo: required
+      python: 3.5
+      env:
+        - DISPLAY=:99.0
+        - LIBOVERLAY_SCROLLBAR=0
+    - os: linux
+      language: python
+      dist: trusty
+      sudo: required
+      python: 3.6
+      env:
+        - DISPLAY=:99.0
+        - LIBOVERLAY_SCROLLBAR=0
+>>>>>>> f54bba5
   allow_failures:
     - python: 3.4_with_system_site_packages
 
@@ -53,6 +80,7 @@ before_script:
 
 script:
   - python3 src/urh/cythonext/build.py &> /tmp/build_log.txt
+master
   - |
     if [[ $TRAVIS_PYTHON_VERSION == "3.6"* ]]
     then
@@ -60,6 +88,9 @@ script:
     else
       pytest -s --boxed tests
     fi
+=======
+  - pytest -s --cov-report= --cov=src/urh --cov-config tests/.coveragerc tests 2> /tmp/test_errors.txt
+>>>>>>> f54bba5
   - pip3 install .
   - urh --version
   - urh autoclose

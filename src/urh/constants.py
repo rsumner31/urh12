@@ -122,7 +122,32 @@ SYMBOL_NAMES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
                 "}", "ß", "?", "`", "¸", "€", "µ", "^", "°", "☠", "♫", "®", "☢"]
 
 
-NUM_CENTERS = 16
+NUMNUM_CENTERS = 16
 
 SHORTEST_PREAMBLE_IN_BITS = 8
 SHORTEST_CONSTANT_IN_BITS = 8
+>>>>>>>+HEAD
+ERS = 16
+>>>>>>> b1ae517... Inital Commit
+
+HIGHLIGHT_TEXT_BACKGROUND_COLOR = QColor("orange")
+HIGHLIGHT_TEXT_FOREGROUND_COLOR = QColor("white")
+
+PEAK_COLOR = QColor("darkRed")
+
+# SYMBOL PARAMETERS
+SYMBOL_NAMES = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+                "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+                "<", ">", "|", ",", ".", "-", "_", "@", "*", "+", "~", "#", "§",
+                "²", "³", '"', "$", "%", "&", "/", "{", "(", "[", ")", "]", "=",
+                "}", "ß", "?", "`", "¸", "€", "µ", "^", "°", "☠", "♫", "®", "☢"]
+
+
+<<<<<<< HEAD
+NUMNUM_CENTERS = 16
+
+SHORTEST_PREAMBLE_IN_BITS = 8
+SHORTEST_CONSTANT_IN_BITS = 8
+>>>>>>>+HEAD
+ERS = 16
+>>>>>>> b1ae517... Inital Commit

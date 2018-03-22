@@ -5,92 +5,87 @@ from PyQt5.QtCore import QDir, Qt, QObject, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 
 from urh import constants
-from urh.dev import config
-from urh.signalprocessing.MessageType import MessageType
+from urh.controller.ProjectDialogController import ProjectDialogController
 from urh.signalprocessing.Modulator import Modulator
-from urh.signalprocessing.Participant import Participant
 from urh.signalprocessing.ProtocoLabel import ProtocolLabel
-from xml.dom import minidom
+from urh.signalprocessing.ProtocolAnalyzer import ProtocolAnalyzer
 from urh.signalprocessing.Signal import Signal
 from urh.util import FileOperator
 
 
 class ProjectManager(QObject):
-    NEWLINE_CODE = "###~~~***~~~###_--:;;-__***~~~###"  # Newlines don't get loaded from xml properly
     AUTOSAVE_INTERVAL_MINUTES = 5
+    sample_rate_changed = pyqtSignal(float)
 
-    project_loaded_status_changed = pyqtSignal(bool)
-    project_updated = pyqtSignal()
-
-    def __init__(self, main_controller):
+    def __init__(self, maincontroller):
         super().__init__()
-        self.main_controller = main_controller
-        self.device_conf = dict(frequency=config.DEFAULT_FREQUENCY,
-                                sample_rate=config.DEFAULT_SAMPLE_RATE,
-                                bandwidth=config.DEFAULT_BANDWIDTH,
-                                gain=config.DEFAULT_GAIN)
-
+        self.maincontroller = maincontroller
+        self.__sample_rate = 1e6
+        self.bandwidth = 1e6
+        self.frequency = 43392e4
+        self.gain = 20
         self.device = "USRP"
-        self.description = ""
         self.project_path = ""
-        self.broadcast_address_hex = "ffff"
-        self.__project_file = None
-        self.participants = []
+        self.project_file = None
 
     @property
-    def project_loaded(self) -> bool:
-        return self.project_file is not None
+    def sample_rate(self):
+        return self.__sample_rate
 
-    @property
-    def project_file(self):
-        return self.__project_file
+    @sample_rate.setter
+    def sample_rate(self, val: float):
+        if val != self.sample_rate:
+            self.__sample_rate = val
+            self.sample_rate_changed.emit(val)
 
-    @project_file.setter
-    def project_file(self, value):
-        self.__project_file = value
-        self.project_loaded_status_changed.emit(self.project_loaded)
-
-    def set_recording_parameters(self, device: str, kwargs: dict):
-        for key, value in kwargs.items():
-            self.device_conf[key] = value
+    def set_recording_parameters(self, freq, sample_rate, bandwidth, gain, device):
+        self.frequency = float(freq)
+        self.sample_rate = float(sample_rate)
+        self.bandwidth = float(bandwidth)
+        self.gain = int(gain)
         self.device = device
 
-    def read_parameters(self, root):
-        device_conf_tag = root.find("device_conf")
-        if device_conf_tag is not None:
-            for dev_tag in device_conf_tag:
-                self.device_conf[dev_tag.tag] = float(dev_tag.text)
-
-        self.description = root.get("description", "").replace(self.NEWLINE_CODE, "\n")
-        self.broadcast_address_hex = root.get("broadcast_address_hex", "ffff")
-
-    def read_message_types(self):
+    def read_recording_parameters(self):
         if self.project_file is None:
-            return None
-
+            return
         tree = ET.parse(self.project_file)
         root = tree.getroot()
+
         try:
-            return [MessageType.from_xml(msg_type_tag) for msg_type_tag in
-                    root.find("protocol").find("message_types").findall("message_type")]
-        except AttributeError:
-            return []
+            self.frequency = float(root.attrib["frequency"])
+        except KeyError:
+            self.frequency = 433.92e6
+        try:
+            self.sample_rate = float(root.attrib["sample_rate"])
+        except KeyError:
+            self.sample_rate = 1e6
+        try:
+            self.bandwidth = float(root.attrib["bandwidth"])
+        except KeyError:
+            self.bandwidth = 1e6
+        try:
+            self.gain = int(root.attrib["gain"])
+        except KeyError:
+            self.gain = 20
 
     def set_project_folder(self, path, ask_for_new_project=True):
         if path != self.project_path:
-            self.main_controller.close_all()
+            self.maincontroller.close_all()
         self.project_path = path
         self.project_file = os.path.join(self.project_path, constants.PROJECT_FILE)
-        collapse_project_tabs = False
         if not os.path.isfile(self.project_file):
             if ask_for_new_project:
-                reply = QMessageBox.question(self.main_controller, "Project File",
+                reply = QMessageBox.question(self.maincontroller, "Project File",
                                              "Do you want to create a Project File for this folder?\n"
                                              "If you chose No, you can do it later via File->Convert Folder to Project.",
                                              QMessageBox.Yes | QMessageBox.No)
 
                 if reply == QMessageBox.Yes:
-                    self.main_controller.show_project_settings()
+                    dialog = ProjectDialogController(new_project=False, parent=self.maincontroller)
+                    dialog.set_path(path)
+                    dialog.finished.connect(self.on_dialog_finished)
+                    dialog.exec_()
+
                 else:
                     self.project_file = None
 
@@ -99,55 +94,49 @@ class ProjectManager(QObject):
                 tree = ET.ElementTree(root)
                 tree.write(self.project_file)
         else:
-            tree = ET.parse(self.project_file)
-            root = tree.getroot()
-
-            collapse_project_tabs = bool(int(root.get("collapse_project_tabs", 0)))
-            cfc = self.main_controller.compare_frame_controller
-            self.read_parameters(root)
-            self.participants = cfc.proto_analyzer.read_participants_from_xml_tag(root=root.find("protocol"))
-            self.main_controller.add_files(self.read_opened_filenames())
-            self.read_compare_frame_groups(root)
-            decodings = cfc.proto_analyzer.read_decoders_from_xml_tag(root.find("protocol"))
-            if decodings:
-                cfc.decodings = decodings
+            self.read_recording_parameters()
+            self.maincontroller.add_files(self.read_opened_filenames())
+            self.read_compare_frame_groups() # Labels are read out here
+            cfc = self.maincontroller.compare_frame_controller
+            cfc.load_decodings()
             cfc.fill_decoding_combobox()
 
-            cfc.proto_analyzer.message_types = self.read_message_types()
-            cfc.fill_message_type_combobox()
-            cfc.proto_analyzer.from_xml_tag(root=root.find("protocol"), participants=self.participants,
-                                            decodings=cfc.decodings)
+            for group_id, decoding_index in self.read_decodings().items():
+                cfc.groups[group_id].decoding = cfc.decodings[decoding_index]
 
+            #cfc.ui.cbDecoding.setCurrentIndex(index)
+            cfc.refresh_protocol_labels()
             cfc.updateUI()
             modulators = self.read_modulators_from_project_file()
-            self.main_controller.generator_tab_controller.modulators = modulators if modulators else [
+            self.maincontroller.generator_tab_controller.modulators = modulators if modulators else [
                 Modulator("Modulation")]
-            self.main_controller.generator_tab_controller.refresh_modulators()
+            self.maincontroller.generator_tab_controller.refresh_modulators()
 
         if len(self.project_path) > 0 and self.project_file is None:
-            self.main_controller.ui.actionConvert_Folder_to_Project.setEnabled(True)
+            self.maincontroller.ui.actionConvert_Folder_to_Project.setEnabled(True)
         else:
-            self.main_controller.ui.actionConvert_Folder_to_Project.setEnabled(False)
+            self.maincontroller.ui.actionConvert_Folder_to_Project.setEnabled(False)
 
-        self.main_controller.adjust_for_current_file(path)
-        self.main_controller.filemodel.setRootPath(path)
-        self.main_controller.ui.fileTree.setRootIndex(
-            self.main_controller.file_proxy_model.mapFromSource(self.main_controller.filemodel.index(path)))
-        self.main_controller.ui.fileTree.setToolTip(path)
-        self.main_controller.ui.splitter.setSizes([1, 1])
-        if collapse_project_tabs:
-            self.main_controller.collapse_project_tab_bar()
-        else:
-            self.main_controller.expand_project_tab_bar()
-
-        self.main_controller.setWindowTitle("Universal Radio Hacker [" + path + "]")
-
-        self.project_loaded_status_changed.emit(self.project_loaded)
-        self.project_updated.emit()
+        self.maincontroller.adjustForCurrentFile(path)
+        self.maincontroller.filemodel.setRootPath(path)
+        self.maincontroller.ui.fileTree.setRootIndex(
+            self.maincontroller.file_proxy_model.mapFromSource(self.maincontroller.filemodel.index(path)))
+        self.maincontroller.ui.fileTree.setToolTip(path)
+        self.maincontroller.ui.splitter.setSizes([1, 1])
+        self.maincontroller.setWindowTitle("Universal Radio Hacker [" + path + "]")
 
     def convert_folder_to_project(self):
         self.project_file = os.path.join(self.project_path, constants.PROJECT_FILE)
-        self.main_controller.show_project_settings()
+        dialog = ProjectDialogController(new_project=False, parent=self.maincontroller)
+        dialog.set_path(self.project_path)
+        dialog.finished.connect(self.on_dialog_finished)
+        dialog.exec_()
+
+        if self.project_file is not None:
+            root = ET.Element("UniversalRadioHackerProject")
+            tree = ET.ElementTree(root)
+            tree.write(self.project_file)
+            self.maincontroller.ui.actionConvert_Folder_to_Project.setEnabled(False)
 
     def write_signal_information_to_project_file(self, signal: Signal, tree=None):
         if self.project_file is None or signal is None or len(signal.filename) == 0:
@@ -172,18 +161,14 @@ class ProjectManager(QObject):
         signal_tag.set("name", signal.name)
         signal_tag.set("filename", os.path.relpath(signal.filename, self.project_path))
         signal_tag.set("bit_length", str(signal.bit_len))
-        signal_tag.set("qad_center", str(signal.qad_center))
+        signal_tag.set("zero_treshold", str(signal.qad_center))
         signal_tag.set("tolerance", str(signal.tolerance))
-        signal_tag.set("noise_threshold", str(signal.noise_threshold))
+        signal_tag.set("noise_treshold", str(signal.noise_treshold))
         signal_tag.set("noise_minimum", str(signal.noise_min_plot))
         signal_tag.set("noise_maximum", str(signal.noise_max_plot))
         signal_tag.set("auto_detect_on_modulation_changed", str(signal.auto_detect_on_modulation_changed))
         signal_tag.set("modulation_type", str(signal.modulation_type))
         signal_tag.set("sample_rate", str(signal.sample_rate))
-
-        messages = ET.SubElement(signal_tag, "messages")
-        for message in messages:
-            messages.append(message.to_xml())
 
         tree.write(self.project_file)
 
@@ -203,8 +188,16 @@ class ProjectManager(QObject):
         for mod_tag in root.findall("modulator"):
             root.remove(mod_tag)
 
-        for i, mod in enumerate(modulators):
-            root.append(mod.to_xml(i))
+        for mod in modulators:
+            mod_tag = ET.SubElement(root, "modulator")
+            mod_tag.set("name", mod.name)
+            mod_tag.set("carrier_freq_hz", str(mod.carrier_freq_hz))
+            mod_tag.set("carrier_phase_deg", str(mod.carrier_phase_deg))
+            mod_tag.set("carrier_amplitude", str(mod.carrier_amplitude))
+            mod_tag.set("modulation_type", str(mod.modulation_type))
+            mod_tag.set("sample_rate", str(mod.sample_rate))
+            mod_tag.set("param_for_one", str(mod.param_for_one))
+            mod_tag.set("param_for_zero", str(mod.param_for_zero))
 
         tree.write(self.project_file)
 
@@ -220,7 +213,15 @@ class ProjectManager(QObject):
 
         result = []
         for mod_tag in root.iter("modulator"):
-            result.append(Modulator.from_xml(mod_tag))
+            mod = Modulator(mod_tag.attrib["name"])
+            mod.carrier_freq_hz = float(mod_tag.attrib["carrier_freq_hz"])
+            mod.carrier_amplitude = float(mod_tag.attrib["carrier_amplitude"])
+            mod.carrier_phase_deg = float(mod_tag.attrib["carrier_phase_deg"])
+            mod.modulation_type = int(mod_tag.attrib["modulation_type"])
+            mod.sample_rate = float(mod_tag.attrib["sample_rate"])
+            mod.param_for_one = float(mod_tag.attrib["param_for_one"])
+            mod.param_for_zero = float(mod_tag.attrib["param_for_zero"])
+            result.append(mod)
 
         return result
 
@@ -228,30 +229,24 @@ class ProjectManager(QObject):
         if self.project_file is None or not os.path.isfile(self.project_file):
             return
 
-        # Recreate file
-        open(self.project_file, 'w').close()
-        root = ET.Element("UniversalRadioHackerProject")
-        tree = ET.ElementTree(root)
-        tree.write(self.project_file)
-
-        # self.write_labels(self.maincontroller.compare_frame_controller.proto_analyzer)
-        self.write_modulators_to_project_file(self.main_controller.generator_tab_controller.modulators, tree=tree)
+        #self.write_labels(self.maincontroller.compare_frame_controller.proto_analyzer)
+        self.write_modulators_to_project_file(self.maincontroller.generator_tab_controller.modulators)
 
         tree = ET.parse(self.project_file)
         root = tree.getroot()
-        device_conf_tag = ET.SubElement(root, "device_conf")
-        for key in sorted(self.device_conf):
-            device_val_tag = ET.SubElement(device_conf_tag, key)
-            device_val_tag.text = str(self.device_conf[key])
-        root.set("description", str(self.description).replace("\n", self.NEWLINE_CODE))
-        root.set("collapse_project_tabs", str(int(not self.main_controller.ui.tabParticipants.isVisible())))
-        root.set("broadcast_address_hex", str(self.broadcast_address_hex))
+        root.set("frequency", str(self.frequency))
+        root.set("sample_rate", str(self.sample_rate))
+        root.set("bandwidth", str(self.bandwidth))
+        root.set("gain", str(self.gain))
+
+        for open_file in root.findall('open_file'):
+            root.remove(open_file)
 
         open_files = []
-        for i, sf in enumerate(self.main_controller.signal_tab_controller.signal_frames):
+        for i, sf in enumerate(self.maincontroller.signal_tab_controller.signal_frames):
             self.write_signal_information_to_project_file(sf.signal, tree=tree)
             try:
-                pf = self.main_controller.signal_protocol_dict[sf]
+                pf = self.maincontroller.signal_protocol_dict[sf]
                 filename = pf.filename
 
                 if filename in FileOperator.archives.keys():
@@ -272,12 +267,17 @@ class ProjectManager(QObject):
         for group_tag in root.findall("group"):
             root.remove(group_tag)
 
-        cfc = self.main_controller.compare_frame_controller
-
+        cfc = self.maincontroller.compare_frame_controller
         for i, group in enumerate(cfc.groups):
             group_tag = ET.SubElement(root, "group")
             group_tag.set("name", str(group.name))
             group_tag.set("id", str(i))
+
+            try:
+                decoding_index = cfc.decodings.index(group.decoding)
+            except ValueError:
+                decoding_index = 0
+            group_tag.set("decoding_index", str(decoding_index))
 
             for proto_frame in cfc.protocols[i]:
                 if proto_frame.filename:
@@ -286,35 +286,44 @@ class ProjectManager(QObject):
                     show = "1" if proto_frame.show else "0"
                     proto_tag.set("show", show)
 
-        root.append(cfc.proto_analyzer.to_xml_tag(decodings=cfc.decodings, participants=self.participants))
+            for label in group_tag.findall('label'):
+                group_tag.remove(label)
 
-        xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="  ")
-        with open(self.project_file, "w") as f:
-            for line in xmlstr.split("\n"):
-                if line.strip():
-                    f.write(line + "\n")
+            for plabel in group.labels:
+                label_tag = ET.SubElement(group_tag, "label")
+                label_tag.set("name", plabel.name)
+                label_tag.set("start", str(plabel.start))
+                label_tag.set("end", str(plabel.end - 1))
+                label_tag.set("refblock", str(plabel.refblock))
+                label_tag.set("refbits", plabel.reference_bits)
+                label_tag.set("display_type_index", str(plabel.display_type_index))
 
-    def read_participants_for_signal(self, signal: Signal, messages):
-        if self.project_file is None or len(signal.filename) == 0:
-            return False
+                restrictive = "1" if plabel.restrictive else "0"
+                apply_decoding = "1" if plabel.apply_decoding else "0"
+
+                label_tag.set("color_index", str(plabel.color_index))
+                label_tag.set("restrictive", restrictive)
+                label_tag.set("apply_decoding", apply_decoding)
+
+
+        tree.write(self.project_file)
+
+    def read_decodings(self) -> dict:
+        if self.project_file is None:
+            return
 
         tree = ET.parse(self.project_file)
         root = tree.getroot()
+        decodings = {}
+        for group_tag in root.iter("group"):
+            id = group_tag.attrib["id"]
+            try:
+                decodings[int(id)] = int(group_tag.attrib["decoding_index"])
+            except KeyError:
+                decodings[int(id)] = 0
 
-        for sig_tag in root.iter("signal"):
-            if sig_tag.attrib["filename"] == os.path.relpath(signal.filename, self.project_path):
-                messages_tag = sig_tag.find("messages")
+        return decodings
 
-                try:
-                    if messages_tag:
-                        for i, message_tag in enumerate(messages_tag.iter("message")):
-                            messages[i].from_xml(message_tag, self.participants)
-                except IndexError:
-                    return False
-
-                return True
-
-        return False
 
     def read_project_file_for_signal(self, signal: Signal):
         if self.project_file is None or len(signal.filename) == 0:
@@ -326,18 +335,21 @@ class ProjectManager(QObject):
             if sig_tag.attrib["filename"] == os.path.relpath(signal.filename,
                                                              self.project_path):
                 signal.name = sig_tag.attrib["name"]
-                signal.qad_center = float(sig_tag.get("qad_center", 0))
-                signal.tolerance = int(sig_tag.get("tolerance", 5))
+                signal.qad_center = float(sig_tag.attrib["zero_treshold"])
+                signal.tolerance = int(sig_tag.attrib["tolerance"])
                 signal.auto_detect_on_modulation_changed = False if \
-                    sig_tag.attrib[
-                        "auto_detect_on_modulation_changed"] == 'False' else True
+                sig_tag.attrib[
+                                                                        "auto_detect_on_modulation_changed"] == 'False' else True
 
-                signal.noise_threshold = float(sig_tag.get("noise_threshold", 0.1))
-                signal.sample_rate = float(sig_tag.get("sample_rate", 1e6))
-                signal.bit_len = int(sig_tag.get("bit_length", 100))
-                signal.modulation_type = int(sig_tag.get("modulation_type", 0))
+                signal.noise_treshold = float(sig_tag.attrib["noise_treshold"])
+                try:
+                    signal.sample_rate = float(sig_tag.attrib["sample_rate"])
+                except KeyError:
+                    pass  # For old project files
+
+                signal.bit_len = int(sig_tag.attrib["bit_length"])
+                signal.modulation_type = int(sig_tag.attrib["modulation_type"])
                 break
-
         return True
 
     def read_opened_filenames(self):
@@ -355,8 +367,14 @@ class ProjectManager(QObject):
             return fileNames
         return []
 
-    def read_compare_frame_groups(self, root):
-        proto_tree_model = self.main_controller.compare_frame_controller.proto_tree_model
+    def read_compare_frame_groups(self):
+        if self.project_file is None:
+            return
+
+        tree = ET.parse(self.project_file)
+        root = tree.getroot()
+
+        proto_tree_model = self.maincontroller.compare_frame_controller.proto_tree_model
         tree_root = proto_tree_model.rootItem
         pfi = proto_tree_model.protocol_tree_items
         proto_frame_items = [item for item in pfi[0]]
@@ -385,20 +403,36 @@ class ProjectManager(QObject):
                     group.appendChild(proto_frame_item)
                     proto_frame_item.show_in_compare_frame = Qt.Checked if show == "1" else Qt.Unchecked
 
-            self.main_controller.compare_frame_controller.expand_group_node(int(id))
+            group = proto_tree_model.groups[int(id)]
 
-        self.main_controller.compare_frame_controller.refresh()
+            for label_tag in group_tag.iter("label"):
+                name = label_tag.attrib["name"]
+                start = int(label_tag.attrib["start"])
+                end = int(label_tag.attrib["end"])
+                refblock = int(label_tag.attrib["refblock"])
+                color_index = int(label_tag.attrib["color_index"])
+                restrictive = int(label_tag.attrib["restrictive"]) == 1
 
-    def from_dialog(self, dialog):
-        if dialog.committed:
-            if dialog.new_project or not os.path.isfile(os.path.join(dialog.path, constants.PROJECT_FILE)):
-                self.set_project_folder(dialog.path, ask_for_new_project=False)
-            self.device_conf["frequency"] = dialog.freq
-            self.device_conf["sample_rate"] = dialog.sample_rate
-            self.device_conf["gain"] = dialog.gain
-            self.device_conf["bandwidth"] = dialog.bandwidth
-            self.description = dialog.description
-            self.broadcast_address_hex = dialog.broadcast_address_hex.lower().replace(" ", "")
-            if dialog.new_project:
-                self.participants = dialog.participants
-            self.project_updated.emit()
+                proto_label = ProtocolLabel(name, start, end, refblock, 0, color_index, restrictive)
+                proto_label.reference_bits = label_tag.attrib["refbits"]
+                proto_label.display_type_index = int(label_tag.attrib["display_type_index"])
+                proto_label.apply_decoding = int(label_tag.attrib["apply_decoding"]) == 1
+
+                group.add_label(proto_label)
+
+            self.maincontroller.compare_frame_controller.expand_group_node(int(id))
+
+        self.maincontroller.compare_frame_controller.refresh()
+
+    def from_dialog(self, dialog: ProjectDialogController):
+        if dialog.commited:
+            self.set_project_folder(dialog.path, ask_for_new_project=False)
+            self.frequency = dialog.freq
+            self.sample_rate = dialog.sample_rate
+
+    def on_dialog_finished(self):
+        if self.sender().commited:
+            self.frequency = self.sender().freq
+            self.sample_rate = self.sender().sample_rate
+        else:
+            self.project_file = None

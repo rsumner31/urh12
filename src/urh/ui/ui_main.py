@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
+<<<<<<< HEAD
 #
+=======
+# Form implementation generated from reading ui file '../ui/main.ui'
+#
+# Created by: PyQt5 UI code generator 5.5.1
+>>>>>>> b1ae517... Inital Commit
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -10,9 +16,12 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1017, 884)
+<<<<<<< HEAD
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/data/icons/appicon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
+=======
+>>>>>>> b1ae517... Inital Commit
         MainWindow.setTabShape(QtWidgets.QTabWidget.Rounded)
         MainWindow.setDockNestingEnabled(False)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -51,6 +60,7 @@ class Ui_MainWindow(object):
         self.fileTree.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.fileTree.setSortingEnabled(False)
         self.fileTree.setObjectName("fileTree")
+<<<<<<< HEAD
         self.fileTree.header().setCascadingSectionResizes(True)
         self.fileTree.header().setStretchLastSection(False)
         self.verticalLayout_3.addWidget(self.fileTree)
@@ -79,6 +89,11 @@ class Ui_MainWindow(object):
         self.tabWidget_Project.addTab(self.tabDescription, "")
         self.verticalLayout_3.addWidget(self.tabWidget_Project)
         self.verticalLayout_3.setStretch(1, 3)
+=======
+        self.fileTree.header().setCascadingSectionResizes(False)
+        self.fileTree.header().setStretchLastSection(False)
+        self.verticalLayout_3.addWidget(self.fileTree)
+>>>>>>> b1ae517... Inital Commit
         self.tabWidget = QtWidgets.QTabWidget(self.splitter)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(1)
@@ -108,10 +123,19 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addWidget(self.progressBar)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
+<<<<<<< HEAD
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1017, 21))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
+=======
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1017, 23))
+        self.menubar.setObjectName("menubar")
+        self.menuFile = QtWidgets.QMenu(self.menubar)
+        self.menuFile.setObjectName("menuFile")
+        self.menuView = QtWidgets.QMenu(self.menubar)
+        self.menuView.setObjectName("menuView")
+>>>>>>> b1ae517... Inital Commit
         self.menuEdit = QtWidgets.QMenu(self.menubar)
         self.menuEdit.setObjectName("menuEdit")
         self.menuHelp = QtWidgets.QMenu(self.menubar)
@@ -145,6 +169,13 @@ class Ui_MainWindow(object):
         icon = QtGui.QIcon.fromTheme("edit-redo")
         self.actionRedo.setIcon(icon)
         self.actionRedo.setObjectName("actionRedo")
+<<<<<<< HEAD
+=======
+        self.actionCommon_Zoom = QtWidgets.QAction(MainWindow)
+        self.actionCommon_Zoom.setCheckable(True)
+        self.actionCommon_Zoom.setChecked(False)
+        self.actionCommon_Zoom.setObjectName("actionCommon_Zoom")
+>>>>>>> b1ae517... Inital Commit
         self.actionShow_Confirm_Close_Dialog = QtWidgets.QAction(MainWindow)
         self.actionShow_Confirm_Close_Dialog.setCheckable(True)
         self.actionShow_Confirm_Close_Dialog.setChecked(False)
@@ -234,6 +265,7 @@ class Ui_MainWindow(object):
         self.actionNew_Project.setObjectName("actionNew_Project")
         self.actionSniff_protocol = QtWidgets.QAction(MainWindow)
         self.actionSniff_protocol.setObjectName("actionSniff_protocol")
+<<<<<<< HEAD
         self.actionProject_settings = QtWidgets.QAction(MainWindow)
         self.actionProject_settings.setObjectName("actionProject_settings")
         self.actionSave_project = QtWidgets.QAction(MainWindow)
@@ -255,6 +287,10 @@ class Ui_MainWindow(object):
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionOpen_directory)
+=======
+        self.menuFile.addAction(self.actionNew_Project)
+        self.menuFile.addAction(self.actionOpen)
+>>>>>>> b1ae517... Inital Commit
         self.menuFile.addAction(self.actionRecord)
         self.menuFile.addAction(self.actionSniff_protocol)
         self.menuFile.addAction(self.actionSpectrum_Analyzer)
@@ -263,11 +299,20 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionClose_all)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionConvert_Folder_to_Project)
+<<<<<<< HEAD
+=======
+        self.menuView.addAction(self.actionHold_Shift_to_Drag)
+        self.menuView.addAction(self.actionShow_Confirm_Close_Dialog)
+        self.menuView.addAction(self.actionSeperate_Protocols_in_Compare_Frame)
+        self.menuView.addAction(self.actionSort_Frames_by_Name)
+        self.menuView.addAction(self.actionShow_file_tree)
+>>>>>>> b1ae517... Inital Commit
         self.menuEdit.addAction(self.actionMinimize_all)
         self.menuEdit.addAction(self.actionMaximize_all)
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionDecoding)
         self.menuEdit.addAction(self.actionOptions)
+<<<<<<< HEAD
         self.menuEdit.addSeparator()
         self.menuEdit.addAction(self.actionFullscreen_mode)
         self.menuHelp.addAction(self.actionAbout_AutomaticHacker)
@@ -278,6 +323,15 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget_Project.setCurrentIndex(0)
+=======
+        self.menuHelp.addAction(self.actionAbout_AutomaticHacker)
+        self.menubar.addAction(self.menuFile.menuAction())
+        self.menubar.addAction(self.menuEdit.menuAction())
+        self.menubar.addAction(self.menuView.menuAction())
+        self.menubar.addAction(self.menuHelp.menuAction())
+
+        self.retranslateUi(MainWindow)
+>>>>>>> b1ae517... Inital Commit
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -285,13 +339,21 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Universal Radio Hacker"))
         self.lnEdtTreeFilter.setPlaceholderText(_translate("MainWindow", "Filter"))
+<<<<<<< HEAD
         self.tabWidget_Project.setTabText(self.tabWidget_Project.indexOf(self.tabParticipants), _translate("MainWindow", "Participants"))
         self.tabWidget_Project.setTabText(self.tabWidget_Project.indexOf(self.tabDescription), _translate("MainWindow", "Description"))
+=======
+>>>>>>> b1ae517... Inital Commit
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_interpretation), _translate("MainWindow", "Interpretation"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_protocol), _translate("MainWindow", "Analysis"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_generator), _translate("MainWindow", "Generator"))
         self.menuFile.setTitle(_translate("MainWindow", "Fi&le"))
+<<<<<<< HEAD
         self.menuEdit.setTitle(_translate("MainWindow", "Edi&t"))
+=======
+        self.menuView.setTitle(_translate("MainWindow", "&View"))
+        self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
+>>>>>>> b1ae517... Inital Commit
         self.menuHelp.setTitle(_translate("MainWindow", "Hel&p"))
         self.actionFSK.setText(_translate("MainWindow", "Undo"))
         self.actionOOK.setText(_translate("MainWindow", "Redo"))
@@ -300,6 +362,10 @@ class Ui_MainWindow(object):
         self.actionAuto_Fit_Y.setText(_translate("MainWindow", "&Auto Fit Y"))
         self.actionUndo.setText(_translate("MainWindow", "&Undo"))
         self.actionRedo.setText(_translate("MainWindow", "&Redo"))
+<<<<<<< HEAD
+=======
+        self.actionCommon_Zoom.setText(_translate("MainWindow", "&Common Zoom"))
+>>>>>>> b1ae517... Inital Commit
         self.actionShow_Confirm_Close_Dialog.setText(_translate("MainWindow", "&Show Confirm Close Dialog"))
         self.actionTest.setText(_translate("MainWindow", "test"))
         self.actionHold_Shift_to_Drag.setText(_translate("MainWindow", "&Hold Shift to Drag"))
@@ -312,12 +378,17 @@ class Ui_MainWindow(object):
         self.actionMinimize_all.setText(_translate("MainWindow", "&Minimize all"))
         self.actionMaximize_all.setText(_translate("MainWindow", "Maximize &all"))
         self.actionSaveAllSignals.setText(_translate("MainWindow", "&Save all signals"))
+<<<<<<< HEAD
         self.actionSeperate_Protocols_in_Compare_Frame.setText(_translate("MainWindow", "Seperate &Protocols in Compare Frame"))
+=======
+        self.actionSeperate_Protocols_in_Compare_Frame.setText(_translate("MainWindow", "&Seperate Protocols in Compare Frame"))
+>>>>>>> b1ae517... Inital Commit
         self.actionOpenArchive.setText(_translate("MainWindow", "&Archive"))
         self.actionOpen.setText(_translate("MainWindow", "&Open..."))
         self.actionOpen_Folder.setText(_translate("MainWindow", "Open &Folder.."))
         self.actionShow_only_Compare_Frame.setText(_translate("MainWindow", "Show Compare Frame only"))
         self.actionConfigurePlugins.setText(_translate("MainWindow", "Configure..."))
+<<<<<<< HEAD
         self.actionSort_Frames_by_Name.setText(_translate("MainWindow", "Sort &Frames by Name"))
         self.actionConvert_Folder_to_Project.setText(_translate("MainWindow", "Convert &Folder to Project"))
         self.actionDecoding.setText(_translate("MainWindow", "&Decoding..."))
@@ -332,6 +403,17 @@ class Ui_MainWindow(object):
         self.actionFullscreen_mode.setText(_translate("MainWindow", "&Fullscreen mode"))
         self.actionOpen_directory.setText(_translate("MainWindow", "Open &directory..."))
         self.actionAbout_Qt.setText(_translate("MainWindow", "About Qt"))
+=======
+        self.actionSort_Frames_by_Name.setText(_translate("MainWindow", "Sort Frames by Name"))
+        self.actionConvert_Folder_to_Project.setText(_translate("MainWindow", "Convert Folder to Project"))
+        self.actionDecoding.setText(_translate("MainWindow", "Decoding..."))
+        self.actionRecord.setText(_translate("MainWindow", "Record signal..."))
+        self.actionSpectrum_Analyzer.setText(_translate("MainWindow", "Spectrum Analyzer..."))
+        self.actionOptions.setText(_translate("MainWindow", "Options..."))
+        self.actionShow_file_tree.setText(_translate("MainWindow", "Show file tree"))
+        self.actionNew_Project.setText(_translate("MainWindow", "New Project.."))
+        self.actionSniff_protocol.setText(_translate("MainWindow", "Sniff protocol..."))
+>>>>>>> b1ae517... Inital Commit
 
 from urh.ui.views.DirectoryTreeView import DirectoryTreeView
 from . import urh_rc

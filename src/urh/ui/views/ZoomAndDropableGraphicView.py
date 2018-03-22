@@ -1,10 +1,8 @@
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QDragEnterEvent
 from PyQt5.QtGui import QDropEvent
 
 from urh.SignalSceneManager import SignalSceneManager
 from urh.signalprocessing.ProtocolAnalyzer import ProtocolAnalyzer
-from urh.signalprocessing.Signal import Signal
 from urh.ui.views.ZoomableGraphicView import ZoomableGraphicView
 
 
@@ -12,22 +10,23 @@ class ZoomAndDropableGraphicView(ZoomableGraphicView):
     signal_loaded = pyqtSignal(ProtocolAnalyzer)
 
     def __init__(self, parent=None):
+        self.scene_creator = None
+        """:type: SignalSceneManager """
         self.signal_tree_root = None
         """type signal_tree_root: ProtocolTreeItem"""
 
-        self.scene_manager = None
-
-        self.signal = None  # type: Signal
-        self.proto_analyzer = None  # type: ProtocolAnalyzer
+        self.signal = None
+        self.proto_analyzer = None
 
         super().__init__(parent)
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
-        event.acceptProposedAction()
+
+    def dragEnterEvent(self, QDragEnterEvent):
+        QDragEnterEvent.acceptProposedAction()
 
     def dropEvent(self, event: QDropEvent):
-        mime_data = event.mimeData()
-        data_str = str(mime_data.text())
+        mimedata = event.mimeData()
+        data_str = str(mimedata.text())
         indexes = list(data_str.split("/")[:-1])
 
         signal = None
@@ -53,12 +52,22 @@ class ZoomAndDropableGraphicView(ZoomableGraphicView):
         if signal is None:
             return
 
-        self.signal = signal  # type: Signal
-        self.proto_analyzer = proto_analyzer  # type: ProtocolAnalyzer
+        self.horizontalScrollBar().blockSignals(True)
 
-        self.scene_manager = SignalSceneManager(signal, self)
-        self.plot_data(self.signal.real_plot_data)
-        self.show_full_scene()
-        self.auto_fit_view()
+        self.scene_creator = SignalSceneManager(signal, self)
+        self.scene_creator.init_scene()
+        self.setScene(self.scene_creator.scene)
+        self.scene_creator.show_full_scene()
+        self.fitInView(self.sceneRect())
+        self.signal_loaded.emit(proto_analyzer)
+        self.signal = signal
+        self.proto_analyzer = proto_analyzer
 
-        self.signal_loaded.emit(self.proto_analyzer)
+        self.horizontalScrollBar().blockSignals(False)
+
+
+    def handle_signal_zoomed_or_scrolled(self):
+        if self.scene_creator is not None:
+            x1 = self.view_rect().x()
+            x2 = x1 + self.view_rect().width()
+            self.scene_creator.show_scene_section(x1, x2)

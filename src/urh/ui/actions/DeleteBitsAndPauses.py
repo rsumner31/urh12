@@ -1,36 +1,37 @@
-import copy
-
 from PyQt5.QtWidgets import QUndoCommand
 
 from urh.signalprocessing.ProtocolAnalyzer import ProtocolAnalyzer
 
 
 class DeleteBitsAndPauses(QUndoCommand):
-    def __init__(self, proto_analyzer: ProtocolAnalyzer, start_message: int, end_message:int,
-                 start: int, end: int, view: int, decoded: bool, subprotos=None):
+    def __init__(self, proto_analyzer: ProtocolAnalyzer, block_start: int, block_end:int,
+                 start: int, end: int, view: int, decoded: bool, blockranges_for_groups=None,
+                 subprotos=None):
         super().__init__()
 
         self.subprotos = [] if subprotos is None else subprotos
-        """:type: list of ProtocolAnalyzer """
         self.view = view
         self.end = end
         self.start = start
-        self.end_message = end_message
-        self.start_message = start_message
+        self.block_end = block_end
+        self.block_start = block_start
         self.proto_analyzer = proto_analyzer
+        self.blockranges_for_groups = blockranges_for_groups
         self.decoded = decoded
-        self.orig_messages = copy.deepcopy(self.proto_analyzer.messages)
+        self.orig_blocks, self.orig_labels = self.proto_analyzer.copy_data()
         self.subproto_hist = {}  # for CFC
         for subproto in self.subprotos:
-            self.subproto_hist[subproto] = copy.deepcopy(subproto.messages)
+            self.subproto_hist[subproto] = subproto.copy_data()
 
 
         self.setText("Delete Bits")
 
     def redo(self):
-        self.proto_analyzer.delete_messages(self.start_message, self.end_message, self.start, self.end, self.view, self.decoded)
+        self.proto_analyzer.delete_blocks(self.block_start, self.block_end, self.start, self.end, self.view,
+                                          self.decoded,
+                                          self.blockranges_for_groups)
 
     def undo(self):
-        self.proto_analyzer.messages = self.orig_messages
+        self.proto_analyzer.revert_to(self.orig_blocks, self.orig_labels)
         for subproto in self.subproto_hist.keys():
-            subproto.messages = self.subproto_hist[subproto]
+            subproto.revert_to(*self.subproto_hist[subproto])

@@ -14,7 +14,7 @@ class ZoomableScene(QGraphicsScene):
         self.zeros_area = None
         self.ones_arrow = None
         self.zeros_arrow = None
-        self.selection_area = ROI(0, 0, 0, 0, fillcolor=constants.SELECTION_COLOR, opacity=constants.SELECTION_OPACITY)
+        self.selection_area = ROI(0, 0, 0, 0, fillcolor=constants.SELECTION_COLOR)
         self.addItem(self.selection_area)
 
     def draw_noise_area(self, y, h):
@@ -27,8 +27,8 @@ class ZoomableScene(QGraphicsScene):
             self.zeros_area.hide()
 
         if self.noise_area is None or self.noise_area.scene() != self:
-            roi = ROI(x, y, w, h, fillcolor=constants.NOISE_COLOR, opacity=constants.NOISE_OPACITY)
-           # roi.setPen(QPen(constants.NOISE_COLOR, Qt.FlatCap))
+            roi = ROI(x, y, w, h, fillcolor=constants.NOISE_COLOR)
+            roi.setPen(QPen(constants.NOISE_COLOR, Qt.FlatCap))
             self.noise_area = roi
             self.addItem(self.noise_area)
         else:
@@ -36,16 +36,18 @@ class ZoomableScene(QGraphicsScene):
             self.noise_area.setY(y)
             self.noise_area.height = h
 
-    def draw_sep_area(self, y_mid):
+    def draw_sep_area(self, ymid):
         x = self.sceneRect().x()
         y = self.sceneRect().y()
         h = self.sceneRect().height()
         w = self.sceneRect().width()
+        # padding = constants.SEPARATION_PADDING
+        padding = 0
         if self.noise_area is not None:
             self.noise_area.hide()
 
         if self.ones_area is None:
-            self.ones_area = QGraphicsRectItem(x, y, w, h / 2 + y_mid)
+            self.ones_area = QGraphicsRectItem(x, y, w, h / 2 - padding + ymid)
             self.ones_area.setBrush(constants.ONES_AREA_COLOR)
             self.ones_area.setOpacity(constants.SEPARATION_OPACITY)
             self.ones_area.setPen(QPen(constants.TRANSPARENT_COLOR, Qt.FlatCap))
@@ -53,9 +55,9 @@ class ZoomableScene(QGraphicsScene):
 
         else:
             self.ones_area.show()
-            self.ones_area.setRect(x, y, w, h / 2 + y_mid)
+            self.ones_area.setRect(x, y, w, h / 2 - padding + ymid)
 
-        start = y + h / 2 + y_mid
+        start = y + h / 2 + padding + ymid
         if self.zeros_area is None:
             self.zeros_area = QGraphicsRectItem(x, start, w, (y + h) - start)
             self.zeros_area.setBrush(constants.ZEROS_AREA_COLOR)

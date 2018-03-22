@@ -8,7 +8,11 @@ class WavFileDialog(QDialog):
 
         l = QVBoxLayout(self)
         msg = self.tr("You selected a .wav file as signal.\n"
+<<<<<<< HEAD
                       "Universal Radio Hacker (URH) will interpret it as real part of the signal.\n"
+=======
+                      "Automatic Hacker will interpret it as real part of the signal.\n"
+>>>>>>> b1ae517... Inital Commit
                       "Protocol results may be bad due to missing imaginary part.\n\n"
                       "Load a complex file if you experience problems.\n"
                       "You have been warned.")

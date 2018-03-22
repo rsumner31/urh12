@@ -166,8 +166,12 @@
           <string>°</string>
          </property>
          <property name="decimals">
-          <number>3</number>
-         </property>
+<          <number>3</number>
+>>>>>>>+HEAD
+======
+           <number>4</number>
+>>>>>>>-b1ae517
+        </property>
          <property name="maximum">
           <double>360.000000000000000</double>
          </property>
@@ -220,7 +224,16 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="placeholderText">
+<>>>>>>>+HEAD
+======
+          <property name="minimumSize">
+          <size>
+           <width>227</width>
+           <height>0</height>
+          </size>
+         </property>
+>>>>>>>-b1ae517
+        <property name="placeholderText">
           <string>Enter Data Bits here</string>
          </property>
         </widget>
@@ -276,11 +289,18 @@
           </sizepolicy>
          </property>
          <property name="decimals">
-          <number>3</number>
+<          <number>3</number>
          </property>
          <property name="minimum">
           <double>0.001000000000000</double>
+>>>>>>>+HEAD
+======
+           <number>4</number>
          </property>
+         <property name="minimum">
+          <double>0.000000000000000</double>
+>>>>>>>-b1ae517
+        </property>
          <property name="maximum">
           <double>999999999.000000000000000</double>
          </property>
@@ -330,7 +350,184 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
+<>>>>>>>+HEAD
+======
+      <item row="6" column="0">
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="2" column="1" colspan="2">
+        <widget class="KillerDoubleSpinBox" name="spinBoxParameter1">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="decimals">
+          <number>4</number>
+         </property>
+         <property name="minimum">
+          <double>0.000100000000000</double>
+         </property>
+         <property name="maximum">
+          <double>999999999.990000009536743</double>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="lParameterfor1">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Amplitude for 1:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="lParameterfor0">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Amplitude for 0:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="3">
+        <widget class="QCheckBox" name="chkBoxLockSIV">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Lock SIV to original signal</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QComboBox" name="comboBoxModulationType">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>Amplitude Shift Keying (ASK)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Frequency Shift Keying (FSK)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Phase Shift Keying (PSK)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="KillerDoubleSpinBox" name="spinBoxParameter0">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="decimals">
+          <number>4</number>
+         </property>
+         <property name="minimum">
+          <double>0.000100000000000</double>
+         </property>
+         <property name="maximum">
+          <double>999999999.990000009536743</double>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="lSamplesInViewModulatedText">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Samples in View:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="2">
+        <widget class="QLabel" name="lSamplesInViewModulated">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Shown Samples in View:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;Red&lt;/span&gt; - if samples in view differ from original signal&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Normal&lt;/span&gt; - if samples in view are equal to the original signal&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>101010121</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>Samples selected:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="2">
+        <widget class="QLabel" name="lModulatedSelectedSamples">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+>>>>>>>-b1ae517
+    <item row="7" column="0">
       <widget class="QLabel" name="label_7">
        <property name="font">
         <font>
@@ -356,7 +553,22 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="showDropIndicator" stdset="0">
+<>>>>>>>+HEAD
+======
+          <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+>>>>>>>-b1ae517
+        <property name="showDropIndicator" stdset="0">
           <bool>true</bool>
          </property>
          <property name="dragEnabled">
@@ -406,7 +618,16 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="maximumSize">
+<>>>>>>>+HEAD
+======
+            <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+>>>>>>>-b1ae517
+          <property name="maximumSize">
             <size>
              <width>16777215</width>
              <height>16777215</height>
@@ -457,7 +678,16 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="maximumSize">
+<>>>>>>>+HEAD
+======
+            <property name="minimumSize">
+            <size>
+             <width>7</width>
+             <height>0</height>
+            </size>
+           </property>
+>>>>>>>-b1ae517
+          <property name="maximumSize">
             <size>
              <width>7</width>
              <height>16777215</height>
@@ -498,7 +728,16 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="maximumSize">
+<>>>>>>>+HEAD
+======
+            <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+>>>>>>>-b1ae517
+          <property name="maximumSize">
             <size>
              <width>16777215</width>
              <height>16777215</height>
@@ -536,7 +775,16 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="toolTip">
+<>>>>>>>+HEAD
+======
+          <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+>>>>>>>-b1ae517
+        <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Shown Samples in View:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;Red&lt;/span&gt; - if samples in view differ from original signal&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Normal&lt;/span&gt; - if samples in view are equal to the original signal&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
@@ -569,7 +817,16 @@
      </item>
      <item row="8" column="1">
       <widget class="ZoomAndDropableGraphicView" name="gVOriginalSignal">
-       <property name="verticalScrollBarPolicy">
+<>>>>>>>+HEAD
+======
+        <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>100</height>
+        </size>
+       </property>
+>>>>>>>-b1ae517
+      <property name="verticalScrollBarPolicy">
         <enum>Qt::ScrollBarAlwaysOff</enum>
        </property>
        <property name="horizontalScrollBarPolicy">
@@ -616,7 +873,16 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="acceptDrops">
+<>>>>>>>+HEAD
+======
+        <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>100</height>
+        </size>
+       </property>
+>>>>>>>-b1ae517
+      <property name="acceptDrops">
         <bool>false</bool>
        </property>
        <property name="verticalScrollBarPolicy">
@@ -635,7 +901,16 @@
      </item>
      <item row="1" column="1" rowspan="2">
       <widget class="ZoomableGraphicView" name="gVCarrier">
-       <property name="acceptDrops">
+<>>>>>>>+HEAD
+======
+        <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>100</height>
+        </size>
+       </property>
+>>>>>>>-b1ae517
+      <property name="acceptDrops">
         <bool>false</bool>
        </property>
        <property name="verticalScrollBarPolicy">
@@ -660,7 +935,16 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="maximumSize">
+<>>>>>>>+HEAD
+======
+        <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+>>>>>>>-b1ae517
+      <property name="maximumSize">
         <size>
          <width>30</width>
          <height>30</height>
@@ -680,7 +964,7 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+<     <item row="6" column="0">
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="3" column="1" colspan="2">
         <widget class="QDoubleSpinBox" name="spinBoxGaussBT">
@@ -896,23 +1180,37 @@
        </item>
       </layout>
      </item>
-    </layout>
+>>>>>>>+HEAD
+======
+>>>>>>>>-b1ae517
+   </layout>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ZoomableGraphicView</class>
+<   <class>ZoomableGraphicView</class>
    <extends>QGraphicsView</extends>
    <header>urh.ui.views.ZoomableGraphicView.h</header>
   </customwidget>
   <customwidget>
-   <class>KillerDoubleSpinBox</class>
+>>>>>>>+HEAD
+======
+>>>>>>>>-b1ae517
+  <class>KillerDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>urh.ui.KillerDoubleSpinBox.h</header>
   </customwidget>
   <customwidget>
-   <class>ZoomAndDropableGraphicView</class>
+<>>>>>>>+HEAD
+======
+    <class>ZoomableGraphicView</class>
+   <extends>QGraphicsView</extends>
+   <header>urh.ui.views.ZoomableGraphicView.h</header>
+  </customwidget>
+  <customwidget>
+>>>>>>>-b1ae517
+  <class>ZoomAndDropableGraphicView</class>
    <extends>QGraphicsView</extends>
    <header>urh.ui.views.ZoomAndDropableGraphicView.h</header>
   </customwidget>

@@ -19,7 +19,7 @@ class FuzzingTableModel(QAbstractTableModel):
         self.remove_duplicates = True
 
     def update(self):
-        if self.fuzzing_label and len(self.fuzzing_label.fuzz_values) > 0:
+        if len(self.fuzzing_label.fuzz_values) > 0:
             if self.remove_duplicates:
                 seq = self.fuzzing_label.fuzz_values[:]
                 seen = set()
@@ -39,8 +39,7 @@ class FuzzingTableModel(QAbstractTableModel):
             self.row_count = 0
             self.data = None
 
-        self.beginResetModel()
-        self.endResetModel()
+        self.layoutChanged.emit()
 
     def rowCount(self, QModelIndex_parent=None, *args, **kwargs):
         return self.row_count

@@ -1,12 +1,20 @@
 from PyQt5.QtCore import Qt, QPointF
+<<<<<<< HEAD
 from PyQt5.QtGui import QColor, QPen
+=======
+from PyQt5.QtGui import QColor
+>>>>>>> b1ae517... Inital Commit
 from PyQt5.QtWidgets import QGraphicsRectItem
 
 from urh import constants
 
 
 class ROI(QGraphicsRectItem):
+<<<<<<< HEAD
     def __init__(self, *args, fillcolor, opacity, parent=None):
+=======
+    def __init__(self, *args, fillcolor, parent=None):
+>>>>>>> b1ae517... Inital Commit
         self.padding = 0
         if len(args) == 0:
             super().__init__(parent)
@@ -27,8 +35,13 @@ class ROI(QGraphicsRectItem):
         self.resizing = False
 
         self.setBrush(fillcolor)
+<<<<<<< HEAD
         self.setPen(QPen(QColor(Qt.transparent), Qt.FlatCap))
         self.setOpacity(opacity)
+=======
+        self.setPen(QColor(Qt.transparent))
+        self.setOpacity(constants.SELECTION_OPACITY)
+>>>>>>> b1ae517... Inital Commit
 
     @property
     def is_empty(self) -> bool:

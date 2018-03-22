@@ -2,6 +2,7 @@ import locale
 
 
 # locale.setlocale(locale.LC_ALL, '')
+<<<<<<<+HEAD
 from urh.util.Logger import logger
 
 
@@ -12,6 +13,12 @@ class Formatter:
 
     @staticmethod
     def science_time(time_in_seconds: float, decimals=2, append_seconds=True, remove_spaces=False) -> str:
+=======
+
+class Formatter():
+    @staticmethod
+    def science_time(time_in_seconds: float) -> str:
+>>>>>>>-b1ae517
         if time_in_seconds < 1e-6:
             suffix = "n"
             value = time_in_seconds * 1e9
@@ -25,7 +32,7 @@ class Formatter:
             suffix = ""
             value = time_in_seconds
 
-        result = locale.format_string("%.{0}f ".format(decimals) + suffix, value)
+<        result = locale.format_string("%.{0}f ".format(decimals) + suffix, value)
         if append_seconds:
             result += "s"
         if remove_spaces:
@@ -53,3 +60,18 @@ class Formatter:
         except (ValueError, TypeError):
             logger.warning("The {0} is not a valid {1}, assuming {2}".format(str_val, str(dtype), str(default)))
             return default
+>>>>>>>+HEAD
+======
+        return locale.format_string("%.2f " + suffix, value) + "s"
+
+    @staticmethod
+    def big_value_with_suffix(value: float) -> str:
+        if value >= 1e9:
+            return locale.format_string("%.2fG", value / 1e9)
+        elif value >= 1e6:
+            return locale.format_string("%.2fM", value / 1e6)
+        elif value >= 1e3:
+            return locale.format_string("%.2fK", value / 1e3)
+        else:
+            return locale.format_string("%.2f", value)
+>>>>>>> b1ae517... Inital Commit

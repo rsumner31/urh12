@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# Form implementation generated from reading ui file '../ui/fuzzing.ui'
 #
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -69,15 +71,15 @@ class Ui_FuzzingDialog(object):
         self.lFuzzingReferenceBlock.setSizePolicy(sizePolicy)
         self.lFuzzingReferenceBlock.setObjectName("lFuzzingReferenceBlock")
         self.gridLayout_5.addWidget(self.lFuzzingReferenceBlock, 2, 0, 1, 1)
-        self.spinBoxFuzzMessage = QtWidgets.QSpinBox(FuzzingDialog)
+        self.spinBoxRefBlock = QtWidgets.QSpinBox(FuzzingDialog)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.spinBoxFuzzMessage.sizePolicy().hasHeightForWidth())
-        self.spinBoxFuzzMessage.setSizePolicy(sizePolicy)
-        self.spinBoxFuzzMessage.setMaximum(999999999)
-        self.spinBoxFuzzMessage.setObjectName("spinBoxFuzzMessage")
-        self.gridLayout_5.addWidget(self.spinBoxFuzzMessage, 2, 1, 1, 1)
+        sizePolicy.setHeightForWidth(self.spinBoxRefBlock.sizePolicy().hasHeightForWidth())
+        self.spinBoxRefBlock.setSizePolicy(sizePolicy)
+        self.spinBoxRefBlock.setMaximum(999999999)
+        self.spinBoxRefBlock.setObjectName("spinBoxRefBlock")
+        self.gridLayout_5.addWidget(self.spinBoxRefBlock, 2, 1, 1, 1)
         self.lFuzzingStart = QtWidgets.QLabel(FuzzingDialog)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
@@ -286,11 +288,11 @@ class Ui_FuzzingDialog(object):
         _translate = QtCore.QCoreApplication.translate
         FuzzingDialog.setWindowTitle(_translate("FuzzingDialog", "Fuzzing"))
         self.lFuzzingLabel.setText(_translate("FuzzingDialog", "Fuzzing Label:"))
-        self.lSourceBlock.setText(_translate("FuzzingDialog", "Source Message:"))
+        self.lSourceBlock.setText(_translate("FuzzingDialog", "Source Block:"))
         self.lPreBits.setText(_translate("FuzzingDialog", "1111"))
         self.lFuzzedBits.setText(_translate("FuzzingDialog", "1010"))
         self.lPostBits.setText(_translate("FuzzingDialog", "010101"))
-        self.lFuzzingReferenceBlock.setText(_translate("FuzzingDialog", "Message to fuzz:"))
+        self.lFuzzingReferenceBlock.setText(_translate("FuzzingDialog", "Fuzzing Label Start Row:"))
         self.lFuzzingStart.setText(_translate("FuzzingDialog", "Fuzzing Label Start Index:"))
         self.lFuzzingEnd.setText(_translate("FuzzingDialog", "Fuzzing Label End Index:"))
         self.lFuzzedValues.setText(_translate("FuzzingDialog", "Fuzzed Values"))

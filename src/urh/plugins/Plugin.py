@@ -4,6 +4,8 @@ from PyQt5 import uic
 from PyQt5.QtCore import QObject, pyqtSignal, Qt, QSettings
 from PyQt5.QtWidgets import QUndoCommand, QUndoStack
 
+from urh.signalprocessing.ProtocolAnalyzer import ProtocolAnalyzer
+
 
 class Plugin(QObject):
     enabled_changed = pyqtSignal()
@@ -15,7 +17,7 @@ class Plugin(QObject):
         self.plugin_path = ""
         self.description = ""
         self.settings_frame = None
-        self.qsettings = QSettings(QSettings.IniFormat, QSettings.UserScope, "urh", self.name + "-plugin")
+        self.qsettings = QSettings(QSettings.UserScope, "urh", self.name + "-plugin")
 
     @property
     def enabled(self) -> bool:
@@ -52,16 +54,13 @@ class ProtocolPlugin(Plugin):
         """
         :type parent: QTableView
         :type undo_stack: QUndoStack
-        :type groups: list of ProtocolGroups
+        :type blocks: list of ProtocolGroups
         """
         raise NotImplementedError("Abstract Method.")
 
-
-class SDRPlugin(Plugin):
+class LabelAssignPlugin(Plugin):
     def __init__(self, name: str):
         Plugin.__init__(self, name)
 
-
-class SignalEditorPlugin(Plugin):
-    def __init__(self, name: str):
-        Plugin.__init__(self, name)
+    def get_action(self, protocol_analyzer: ProtocolAnalyzer):
+        raise NotImplementedError("Abstract Method.")

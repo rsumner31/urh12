@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# Form implementation generated from reading ui file '../ui/properties_dialog.ui'
 #
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -9,14 +11,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_DialogLabels(object):
     def setupUi(self, DialogLabels):
         DialogLabels.setObjectName("DialogLabels")
-        DialogLabels.resize(714, 463)
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout(DialogLabels)
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        DialogLabels.resize(673, 336)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(DialogLabels)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.tblViewProtoLabels = ProtocolLabelTableView(DialogLabels)
-        self.tblViewProtoLabels.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-        self.tblViewProtoLabels.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
         self.tblViewProtoLabels.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
         self.tblViewProtoLabels.setHorizontalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
         self.tblViewProtoLabels.setObjectName("tblViewProtoLabels")
@@ -24,7 +24,7 @@ class Ui_DialogLabels(object):
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout.addLayout(self.verticalLayout)
-        self.verticalLayout_3.addLayout(self.horizontalLayout)
+        self.verticalLayout_2.addLayout(self.horizontalLayout)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.label = QtWidgets.QLabel(DialogLabels)
@@ -41,10 +41,16 @@ class Ui_DialogLabels(object):
         self.horizontalLayout_2.addWidget(self.cbProtoView)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
-        self.verticalLayout_3.addLayout(self.horizontalLayout_2)
+        self.label_2 = QtWidgets.QLabel(DialogLabels)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout_2.addWidget(self.label_2)
+        self.lDecodingName = QtWidgets.QLabel(DialogLabels)
+        self.lDecodingName.setObjectName("lDecodingName")
+        self.horizontalLayout_2.addWidget(self.lDecodingName)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
         self.btnConfirm = QtWidgets.QPushButton(DialogLabels)
         self.btnConfirm.setObjectName("btnConfirm")
-        self.verticalLayout_3.addWidget(self.btnConfirm)
+        self.verticalLayout_2.addWidget(self.btnConfirm)
 
         self.retranslateUi(DialogLabels)
         QtCore.QMetaObject.connectSlotsByName(DialogLabels)
@@ -56,6 +62,8 @@ class Ui_DialogLabels(object):
         self.cbProtoView.setItemText(0, _translate("DialogLabels", "Bits"))
         self.cbProtoView.setItemText(1, _translate("DialogLabels", "Hex"))
         self.cbProtoView.setItemText(2, _translate("DialogLabels", "ASCII"))
+        self.label_2.setText(_translate("DialogLabels", "Decoding:"))
+        self.lDecodingName.setText(_translate("DialogLabels", "Non Return to Zero (NRZ)"))
         self.btnConfirm.setText(_translate("DialogLabels", "Confirm"))
 
 from urh.ui.views.ProtocolLabelTableView import ProtocolLabelTableView

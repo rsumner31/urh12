@@ -4,8 +4,7 @@ import os
 import sys
 
 from urh import constants
-from urh.plugins.Plugin import Plugin, ProtocolPlugin
-from urh.util.Logger import logger
+from urh.plugins.Plugin import Plugin, ProtocolPlugin, LabelAssignPlugin
 
 
 class PluginManager(object):
@@ -24,6 +23,10 @@ class PluginManager(object):
     def protocol_plugins(self):
         return [p for p in self.installed_plugins if isinstance(p, ProtocolPlugin)]
 
+    @property
+    def label_assign_plugins(self):
+        return [p for p in self.installed_plugins if isinstance(p, LabelAssignPlugin)]
+
     def load_installed_plugins(self):
         """ :rtype: list of Plugin """
         result = []
@@ -31,19 +34,13 @@ class PluginManager(object):
         settings  = constants.SETTINGS
 
         for d in plugin_dirs:
-            if d == "__pycache__":
-                continue
-            try:
-                class_module = self.load_plugin(d)
-                plugin = class_module()
-                plugin.plugin_path = os.path.join(self.plugin_path, plugin.name)
-                plugin.load_description()
-                plugin.load_settings_frame()
-                plugin.enabled = settings.value(plugin.name, type=bool) if plugin.name in settings.allKeys() else False
-                result.append(plugin)
-            except ImportError as e:
-                logger.warning("Could not load plugin {0} ({1})".format(d, e))
-                continue
+            class_module = self.load_plugin(d)
+            plugin = class_module()
+            plugin.plugin_path = os.path.join(self.plugin_path, plugin.name)
+            plugin.load_description()
+            plugin.load_settings_frame()
+            plugin.enabled = settings.value(plugin.name, type=bool) if plugin.name in settings.allKeys() else False
+            result.append(plugin)
 
         return result
 

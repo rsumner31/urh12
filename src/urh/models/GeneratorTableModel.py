@@ -1,55 +1,65 @@
 from PyQt5.QtCore import Qt, QModelIndex
-from PyQt5.QtGui import QColor, QFont
+from PyQt5.QtGui import QColor
 
 from urh import constants
 from urh.models.ProtocolTreeItem import ProtocolTreeItem
 from urh.models.TableModel import TableModel
 from urh.signalprocessing.ProtocolAnalyzerContainer import ProtocolAnalyzerContainer
-from urh.signalprocessing.encoder import Encoder
 from urh.ui.actions.Clear import Clear
 from urh.ui.actions.DeleteBitsAndPauses import DeleteBitsAndPauses
 from urh.ui.actions.InsertBitsAndPauses import InsertBitsAndPauses
 from urh.ui.actions.InsertColumn import InsertColumn
-from urh.util.Logger import logger
 
 
 class GeneratorTableModel(TableModel):
-    def __init__(self, tree_root_item: ProtocolTreeItem, modulators, decodings, parent = None):
-        super().__init__(participants=[], parent=parent)
-        self.protocol = ProtocolAnalyzerContainer(modulators)
+    def __init__(self, tree_root_item: ProtocolTreeItem, modulators, decoders, parent = None):
+        super().__init__(parent)
+        self.protocol = ProtocolAnalyzerContainer(modulators, decoders)
         self.tree_root_item = tree_root_item
         self.dropped_row = -1
-
-        self.decodings = decodings  # type: list[Encoder]
 
         self.cfc = None
         self.is_writeable = True
         self.decode = False
         self.is_generator = True
 
+    def refresh_bgcolors_and_tooltips(self):
+        self.background_colors.clear()
+        self.tooltips.clear()
+        label_colors = constants.LABEL_COLORS
+
+        for lbl in self.protocol.protocol_labels:
+            bg_color = label_colors[lbl.color_index]
+            for i in lbl.block_numbers:
+                start, end = self.protocol.get_label_range(lbl, self.proto_view, self.decode)
+                for j in range(start, end):
+                    self.background_colors[i, j] = bg_color
+                    self.tooltips[i, j] = lbl.name
+
     def refresh_fonts(self):
         self.bold_fonts.clear()
         self.text_colors.clear()
         pac = self.protocol
-        assert isinstance(pac, ProtocolAnalyzerContainer)
-        for i, message in enumerate(pac.messages):
-            if message.fuzz_created:
-                for lbl in (lbl for lbl in message.message_type if lbl.fuzz_created):
-                    for j in range(*message.get_label_range(lbl=lbl, view=self.proto_view, decode=False)):
-                        self.bold_fonts[i, j] = True
+        for i, block in enumerate(pac.blocks):
+            fc = [pac.convert_range(start, end, 0, self.proto_view, False) for start, end in block.fuzz_created]
+            for f in fc:
+                for j in range(f[0], f[1]):
+                    self.bold_fonts[i, j] = True
 
-            for lbl in message.active_fuzzing_labels:
-                for j in range(*message.get_label_range(lbl=lbl, view=self.proto_view, decode=False)):
+        for lbl in pac.protocol_labels:
+            if lbl.active_fuzzing:
+                i = lbl.refblock
+                for j in range(*pac.get_label_range(lbl, self.proto_view, False)):
                     self.bold_fonts[i, j] = True
                     self.text_colors[i, j] = QColor("orange")
 
-    def delete_range(self, msg_start: int, msg_end: int, index_start: int, index_end: int):
-        if msg_start > msg_end:
-            msg_start, msg_end = msg_end, msg_start
+    def delete_range(self, block_start: int, block_end: int, index_start: int, index_end: int):
+        if block_start > block_end:
+            block_start, block_end = block_end, block_start
         if index_start > index_end:
             index_start, index_end = index_end, index_start
 
-        remove_action = DeleteBitsAndPauses(self.protocol, msg_start, msg_end, index_start,
+        remove_action = DeleteBitsAndPauses(self.protocol, block_start, block_end, index_start,
                                             index_end, self.proto_view, False)
         ########## Zugehörige Pausen löschen
         self.undo_stack.push(remove_action)
@@ -73,19 +83,16 @@ class GeneratorTableModel(TableModel):
         group_nodes = []
         file_nodes = []
         for index in indexes:
-            try:
-                row, column, parent = map(int, index.split(","))
-                if parent == -1:
-                    parent = self.tree_root_item
-                else:
-                    parent = self.tree_root_item.child(parent)
-                node = parent.child(row)
-                if node.is_group:
-                    group_nodes.append(node)
-                else:
-                    file_nodes.append(node)
-            except ValueError:
-                continue
+            row, column, parent = map(int, index.split(","))
+            if parent == -1:
+                parent = self.tree_root_item
+            else:
+                parent = self.tree_root_item.child(parent)
+            node = parent.child(row)
+            if node.is_group:
+                group_nodes.append(node)
+            else:
+                file_nodes.append(node)
 
         # Which Nodes to add?
         nodes_to_add = []
@@ -108,22 +115,13 @@ class GeneratorTableModel(TableModel):
         self.protocol.duplicate_line(row)
         self.update()
 
-    def get_selected_label_index(self, row: int, column: int):
-        if self.row_count == 0:
-            return -1
-
-        try:
-            msg = self.protocol.messages[row]
-        except IndexError:
-            logger.warning("{} is out of range for generator protocol".format(row))
-            return -1
-
-        for i, lbl in enumerate(msg.message_type):
-            if column in range(*msg.get_label_range(lbl, self.proto_view, False)):
+    def get_selected_label_index(self, selected_col: int):
+        for i, lbl in enumerate(self.protocol.protocol_labels):
+            if selected_col in range(*self.protocol.get_label_range(lbl, self.proto_view, False)):
                 return i
 
         return -1
 
-    def insert_column(self, index: int, rows: list):
-        insert_action = InsertColumn(self.protocol, index, rows, self.proto_view)
+    def insert_column(self, index: int):
+        insert_action = InsertColumn(self.protocol, index)
         self.undo_stack.push(insert_action)

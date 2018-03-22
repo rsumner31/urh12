@@ -9,7 +9,11 @@ class FileFilterProxyModel(QSortFilterProxyModel):
 
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex):
         index0 = self.sourceModel().index(source_row, 0, source_parent)
+<<<<<<<+HEAD
         return self.sourceModel().fileName(index0) != "URHProject.xml"
+=======
+        return self.sourceModel().fileName(index0) not in ("URHProject.xml")
+>>>>>>>-b1ae517
 
     def data(self, index: QModelIndex, role=None):
         if role == Qt.FontRole or role == Qt.TextColorRole:

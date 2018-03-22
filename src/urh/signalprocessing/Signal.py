@@ -10,7 +10,10 @@ from PyQt5.QtWidgets import QApplication
 import urh.cythonext.signalFunctions as signal_functions
 from urh import constants
 from urh.util import FileOperator
+<<<<<<< HEAD
 from urh.util.Logger import logger
+=======
+>>>>>>> b1ae517... Inital Commit
 
 
 class Signal(QObject):
@@ -23,7 +26,11 @@ class Signal(QObject):
 
     bit_len_changed = pyqtSignal(int)
     tolerance_changed = pyqtSignal(int)
+<<<<<<< HEAD
     noise_threshold_changed = pyqtSignal()
+=======
+    noise_treshold_changed = pyqtSignal()
+>>>>>>> b1ae517... Inital Commit
     qad_center_changed = pyqtSignal(float)
     name_changed = pyqtSignal(str)
     sample_rate_changed = pyqtSignal(float)
@@ -31,7 +38,11 @@ class Signal(QObject):
 
     saved_status_changed = pyqtSignal()
     protocol_needs_update = pyqtSignal()
+<<<<<<< HEAD
     data_edited = pyqtSignal()  # On Crop/Mute/Delete etc.
+=======
+    full_refresh_needed = pyqtSignal()  # On Crop/Mute/Delete etc.
+>>>>>>> b1ae517... Inital Commit
 
     def __init__(self, filename: str, name: str, wav_is_qad_demod=False,
                  modulation: str = None, sample_rate: float = 1e6, parent=None):
@@ -41,7 +52,11 @@ class Signal(QObject):
         self.__bit_len = 100
         self._qad = None
         self.__qad_center = 0
+<<<<<<< HEAD
         self._noise_threshold = 0
+=======
+        self._noise_treshold = 0
+>>>>>>> b1ae517... Inital Commit
         self.__sample_rate = sample_rate
         self.noise_min_plot = 0
         self.noise_max_plot = 0
@@ -60,6 +75,7 @@ class Signal(QObject):
             # Daten auslesen
             if not self.wav_mode:
                 if not filename.endswith(".coco"):
+<<<<<<< HEAD
                     if filename.endswith(".complex16u"):
                         # two 8 bit unsigned integers
                         raw = np.fromfile(filename, dtype=[('r', np.uint8), ('i', np.uint8)])
@@ -74,6 +90,9 @@ class Signal(QObject):
                         self._fulldata.imag = (raw['i'] + 0.5) / 127.5
                     else:
                         self._fulldata = np.fromfile(filename, dtype=np.complex64)  # Uncompressed
+=======
+                    self._fulldata = np.fromfile(filename, dtype=np.complex64)  # Uncompressed
+>>>>>>> b1ae517... Inital Commit
                 else:
                     obj = tarfile.open(filename, "r")
                     members = obj.getmembers()
@@ -82,7 +101,11 @@ class Signal(QObject):
                     self._fulldata = np.fromfile(extracted_filename, dtype=np.complex64)
                     os.remove(extracted_filename)
 
+<<<<<<< HEAD
                 self._fulldata = np.ascontiguousarray(self._fulldata, dtype=np.complex64)  # type: np.ndarray
+=======
+                self._fulldata = np.ascontiguousarray(self._fulldata, dtype=np.complex64)
+>>>>>>> b1ae517... Inital Commit
             else:
                 f = wave.open(filename, "r")
                 n = f.getnframes()
@@ -100,11 +123,21 @@ class Signal(QObject):
                 f.close()
 
             self.filename = filename
+<<<<<<< HEAD
 
             if not self.qad_demod_file_loaded:
                 self.noise_threshold = self.calc_noise_threshold(int(0.99 * self.num_samples), self.num_samples)
 
         else:
+=======
+            self._num_samples = len(self._fulldata)
+
+            if not self.qad_demod_file_loaded:
+                self.calc_noise_treshold(int(0.99 * self.num_samples), self.num_samples)
+
+        else:
+            self._num_samples = -1
+>>>>>>> b1ae517... Inital Commit
             self.filename = ""
 
     @property
@@ -204,6 +237,7 @@ class Signal(QObject):
         if value != self.__name:
             self.__name = value
             self.name_changed.emit(self.__name)
+<<<<<<< HEAD
 
     @property
     def num_samples(self):
@@ -222,6 +256,27 @@ class Signal(QObject):
             self.noise_min_plot = -value
             self.noise_max_plot = value
             self.noise_threshold_changed.emit()
+=======
+    @property
+    def num_samples(self):
+        if self._num_samples == -1:
+            self._num_samples = len(self.data)
+        return self._num_samples
+
+    @property
+    def noise_treshold(self):
+        return self._noise_treshold
+
+    @noise_treshold.setter
+    def noise_treshold(self, value):
+        if value != self.noise_treshold:
+            self._qad = None
+            self.clear_parameter_cache()
+            self._noise_treshold = value
+            self.noise_min_plot = -value
+            self.noise_max_plot = value
+            self.noise_treshold_changed.emit()
+>>>>>>> b1ae517... Inital Commit
             if not self.block_protocol_update:
                 self.protocol_needs_update.emit()
 
@@ -282,6 +337,7 @@ class Signal(QObject):
         return signal_functions.find_signal_end(self.qad, self.modulation_type)
 
     def quad_demod(self):
+<<<<<<< HEAD
         return signal_functions.afp_demod(self.data, self.noise_threshold, self.modulation_type)
 
     def calc_noise_threshold(self, noise_start: int, noise_end: int):
@@ -291,6 +347,14 @@ class Signal(QObject):
         except ValueError:
             logger.warning("Could not caluclate noise treshold for range {}-{}".format(int(noise_start),int(noise_end)))
             return self.noise_threshold
+=======
+        return signal_functions.afp_demod(self.data, self.noise_treshold, self.modulation_type)
+
+    def calc_noise_treshold(self, noise_start, noise_end):
+        NDIGITS = 4
+        self.noise_treshold = np.ceil(
+            np.max(np.absolute(self.data[noise_start:noise_end])) * 10 ** NDIGITS) / 10 ** NDIGITS
+>>>>>>> b1ae517... Inital Commit
 
     def estimate_bitlen(self) -> int:
         bit_len = self.__parameter_cache[self.modulation_type_str]["bit_len"]
@@ -311,7 +375,12 @@ class Signal(QObject):
     def create_new(self, start:int, end:int):
         new_signal = Signal("", "New " + self.name)
         new_signal._fulldata = self.data[start:end]
+<<<<<<< HEAD
         new_signal._noise_threshold = self.noise_threshold
+=======
+        new_signal._num_samples = end - start
+        new_signal._noise_treshold = self.noise_treshold
+>>>>>>> b1ae517... Inital Commit
         new_signal.noise_min_plot = self.noise_min_plot
         new_signal.noise_max_plot = self.noise_max_plot
         new_signal.__bit_len = self.bit_len
@@ -367,6 +436,7 @@ class Signal(QObject):
 
     def silent_set_modulation_type(self, mod_type: int):
         self.__modulation_type = mod_type
+<<<<<<< HEAD
 
     def insert_data(self, index: int, data: np.ndarray):
         self._fulldata = np.insert(self._fulldata, index, data)
@@ -411,3 +481,5 @@ class Signal(QObject):
         signal._fulldata = samples
 
         return signal
+=======
+>>>>>>> b1ae517... Inital Commit

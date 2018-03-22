@@ -14,7 +14,7 @@
    <string>Universal Radio Hacker</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="urh.qrc">
+   <iconset resource="../urh.qrc">
     <normaloff>:/icons/data/icons/appicon.png</normaloff>:/icons/data/icons/appicon.png</iconset>
   </property>
   <property name="tabShape">
@@ -558,7 +558,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="urh.qrc"/>
+  <include location="../urh.qrc"/>
  </resources>
  <connections/>
 </ui>

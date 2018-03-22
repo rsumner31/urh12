@@ -1045,7 +1045,7 @@
   <tabstop>btnAccept</tabstop>
  </tabstops>
  <resources>
-  <include location="urh.qrc"/>
+  <include location="../urh.qrc"/>
  </resources>
  <connections/>
 </ui>

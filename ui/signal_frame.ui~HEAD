@@ -1132,7 +1132,7 @@ If you want your protocol to be better seperated, edit the PauseLen using right-
   <tabstop>spinBoxXZoom</tabstop>
  </tabstops>
  <resources>
-  <include location="../urh.qrc"/>
+  <include location="urh.qrc"/>
  </resources>
  <connections/>
 </ui>
